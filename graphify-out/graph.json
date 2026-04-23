@@ -97,9 +97,9 @@
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\workers\\__init__.py",
       "source_location": "L1",
-      "id": "init_rationale_1",
       "community": 9,
-      "norm_label": "worker package placeholder."
+      "norm_label": "worker package placeholder.",
+      "id": "init_rationale_1"
     },
     {
       "label": "router.py",
@@ -313,9 +313,9 @@
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\api\\routes\\demo.py",
       "source_location": "L1",
-      "id": "demo_rationale_1",
       "community": 6,
-      "norm_label": "demo control endpoints.  these are what the settings \u2192 demo control panel talk"
+      "norm_label": "demo control endpoints.  these are what the settings \u2192 demo control panel talk",
+      "id": "demo_rationale_1"
     },
     {
       "label": "events.py",
@@ -340,9 +340,9 @@
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\api\\routes\\events.py",
       "source_location": "L12",
-      "id": "events_rationale_12",
       "community": 14,
-      "norm_label": "server-sent events stream for the operator ui.      ``eventsource`` can't set"
+      "norm_label": "server-sent events stream for the operator ui.      ``eventsource`` can't set",
+      "id": "events_rationale_12"
     },
     {
       "label": "feeds.py",
@@ -394,9 +394,9 @@
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\api\\routes\\feeds.py",
       "source_location": "L52",
-      "id": "feeds_rationale_52",
       "community": 4,
-      "norm_label": "ingest an external feed item, run phash match, optionally promote to incident."
+      "norm_label": "ingest an external feed item, run phash match, optionally promote to incident.",
+      "id": "feeds_rationale_52"
     },
     {
       "label": "health.py",
@@ -826,9 +826,9 @@
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\schemas\\incident.py",
       "source_location": "L11",
-      "id": "incident_rationale_11",
       "community": 3,
-      "norm_label": "flat incident row used by the list + overview rail.      field names mirror th"
+      "norm_label": "flat incident row used by the list + overview rail.      field names mirror th",
+      "id": "incident_rationale_11"
     },
     {
       "label": "match_candidate.py",
@@ -1060,36 +1060,36 @@
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\services\\db.py",
       "source_location": "L1",
-      "id": "db_rationale_1",
       "community": 0,
-      "norm_label": "sqlite data layer for killcont mvp.  one sqlite file at ``var/app.db``. the mo"
+      "norm_label": "sqlite data layer for killcont mvp.  one sqlite file at ``var/app.db``. the mo",
+      "id": "db_rationale_1"
     },
     {
       "label": "Context-managed sqlite connection with dict rows and foreign keys on.",
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\services\\db.py",
       "source_location": "L129",
-      "id": "db_rationale_129",
       "community": 0,
-      "norm_label": "context-managed sqlite connection with dict rows and foreign keys on."
+      "norm_label": "context-managed sqlite connection with dict rows and foreign keys on.",
+      "id": "db_rationale_129"
     },
     {
       "label": "Apply schema, idempotent. Called from FastAPI startup hook.",
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\services\\db.py",
       "source_location": "L147",
-      "id": "db_rationale_147",
       "community": 0,
-      "norm_label": "apply schema, idempotent. called from fastapi startup hook."
+      "norm_label": "apply schema, idempotent. called from fastapi startup hook.",
+      "id": "db_rationale_147"
     },
     {
       "label": "Drop every table, recreate schema. Used by /demo/reset.",
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\services\\db.py",
       "source_location": "L156",
-      "id": "db_rationale_156",
       "community": 0,
-      "norm_label": "drop every table, recreate schema. used by /demo/reset."
+      "norm_label": "drop every table, recreate schema. used by /demo/reset.",
+      "id": "db_rationale_156"
     },
     {
       "label": "demo_data.py",
@@ -1132,9 +1132,9 @@
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\services\\demo_data.py",
       "source_location": "L1",
-      "id": "demo_data_rationale_1",
       "community": 5,
-      "norm_label": "legacy hardcoded demo data (pre-mvp).  this module is retained as a compatibil"
+      "norm_label": "legacy hardcoded demo data (pre-mvp).  this module is retained as a compatibil",
+      "id": "demo_data_rationale_1"
     },
     {
       "label": "events_bus.py",
@@ -1177,18 +1177,18 @@
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\services\\events_bus.py",
       "source_location": "L1",
-      "id": "events_bus_rationale_1",
       "community": 5,
-      "norm_label": "in-process pub/sub for sse.  each connected client gets its own asyncio.queue."
+      "norm_label": "in-process pub/sub for sse.  each connected client gets its own asyncio.queue.",
+      "id": "events_bus_rationale_1"
     },
     {
       "label": "Yield raw SSE ``data:`` frames for one client.",
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\services\\events_bus.py",
       "source_location": "L29",
-      "id": "events_bus_rationale_29",
       "community": 5,
-      "norm_label": "yield raw sse ``data:`` frames for one client."
+      "norm_label": "yield raw sse ``data:`` frames for one client.",
+      "id": "events_bus_rationale_29"
     },
     {
       "label": "repos.py",
@@ -1402,18 +1402,18 @@
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\services\\repos.py",
       "source_location": "L1",
-      "id": "repos_rationale_1",
       "community": 0,
-      "norm_label": "thin query helpers shared across route handlers.  not a full orm \u2014 just the co"
+      "norm_label": "thin query helpers shared across route handlers.  not a full orm \u2014 just the co",
+      "id": "repos_rationale_1"
     },
     {
       "label": "Shape a joined incident row into the FE-facing summary format.      Expected k",
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\services\\repos.py",
       "source_location": "L60",
-      "id": "repos_rationale_60",
       "community": 0,
-      "norm_label": "shape a joined incident row into the fe-facing summary format.      expected k"
+      "norm_label": "shape a joined incident row into the fe-facing summary format.      expected k",
+      "id": "repos_rationale_60"
     },
     {
       "label": "seeder.py",
@@ -1474,18 +1474,18 @@
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\services\\seeder.py",
       "source_location": "L1",
-      "id": "seeder_rationale_1",
       "community": 2,
-      "norm_label": "demo seeder: plants a ready-to-demo dataset into sqlite.  generates placeholde"
+      "norm_label": "demo seeder: plants a ready-to-demo dataset into sqlite.  generates placeholde",
+      "id": "seeder_rationale_1"
     },
     {
       "label": "Wipe + repopulate the DB with the championship-final scenario.      Returns co",
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\services\\seeder.py",
       "source_location": "L180",
-      "id": "seeder_rationale_180",
       "community": 2,
-      "norm_label": "wipe + repopulate the db with the championship-final scenario.      returns co"
+      "norm_label": "wipe + repopulate the db with the championship-final scenario.      returns co",
+      "id": "seeder_rationale_180"
     },
     {
       "label": "similarity.py",
@@ -1564,27 +1564,27 @@
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\services\\similarity.py",
       "source_location": "L1",
-      "id": "similarity_rationale_1",
       "community": 4,
-      "norm_label": "perceptual-hash similarity helpers.  the mvp uses a lightweight 64-bit dhash-s"
+      "norm_label": "perceptual-hash similarity helpers.  the mvp uses a lightweight 64-bit dhash-s",
+      "id": "similarity_rationale_1"
     },
     {
       "label": "Return a stable 16-char hex image fingerprint.      Uses an 8x8 dHash-style ap",
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\services\\similarity.py",
       "source_location": "L21",
-      "id": "similarity_rationale_21",
       "community": 4,
-      "norm_label": "return a stable 16-char hex image fingerprint.      uses an 8x8 dhash-style ap"
+      "norm_label": "return a stable 16-char hex image fingerprint.      uses an 8x8 dhash-style ap",
+      "id": "similarity_rationale_21"
     },
     {
       "label": "Find the highest-scoring asset row against a candidate pHash.      ``asset_has",
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\services\\similarity.py",
       "source_location": "L83",
-      "id": "similarity_rationale_83",
       "community": 4,
-      "norm_label": "find the highest-scoring asset row against a candidate phash.      ``asset_has"
+      "norm_label": "find the highest-scoring asset row against a candidate phash.      ``asset_has",
+      "id": "similarity_rationale_83"
     },
     {
       "label": "storage.py",
@@ -1699,36 +1699,36 @@
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\services\\storage.py",
       "source_location": "L1",
-      "id": "storage_rationale_1",
       "community": 2,
-      "norm_label": "local filesystem storage for uploads and simulated/derivative media.  files la"
+      "norm_label": "local filesystem storage for uploads and simulated/derivative media.  files la",
+      "id": "storage_rationale_1"
     },
     {
       "label": "Fake a keyframe strip from a single still by applying slight variations.",
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\services\\storage.py",
       "source_location": "L70",
-      "id": "storage_rationale_70",
       "community": 2,
-      "norm_label": "fake a keyframe strip from a single still by applying slight variations."
+      "norm_label": "fake a keyframe strip from a single still by applying slight variations.",
+      "id": "storage_rationale_70"
     },
     {
       "label": "Create a visually-similar-but-tampered variant for the simulator.      Adds a",
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\services\\storage.py",
       "source_location": "L99",
-      "id": "storage_rationale_99",
       "community": 2,
-      "norm_label": "create a visually-similar-but-tampered variant for the simulator.      adds a"
+      "norm_label": "create a visually-similar-but-tampered variant for the simulator.      adds a",
+      "id": "storage_rationale_99"
     },
     {
       "label": "Used by the seeder when no real image files are present.",
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\services\\storage.py",
       "source_location": "L124",
-      "id": "storage_rationale_124",
       "community": 2,
-      "norm_label": "used by the seeder when no real image files are present."
+      "norm_label": "used by the seeder when no real image files are present.",
+      "id": "storage_rationale_124"
     },
     {
       "label": "triage.py",
@@ -1780,9 +1780,9 @@
       "file_type": "rationale",
       "source_file": "apps\\api\\app\\services\\triage.py",
       "source_location": "L1",
-      "id": "triage_rationale_1",
       "community": 11,
-      "norm_label": "triage text generator.  defaults to canned strings keyed by severity. if ``gem"
+      "norm_label": "triage text generator.  defaults to canned strings keyed by severity. if ``gem",
+      "id": "triage_rationale_1"
     },
     {
       "label": "__init__.py",
@@ -2432,9 +2432,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_killcont",
       "community": 22,
-      "norm_label": "killcont product"
+      "norm_label": "killcont product",
+      "id": "readme_killcont"
     },
     {
       "label": "C2PA Provenance",
@@ -2445,9 +2445,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_c2pa",
       "community": 22,
-      "norm_label": "c2pa provenance"
+      "norm_label": "c2pa provenance",
+      "id": "readme_c2pa"
     },
     {
       "label": "Vertex AI Multimodal Embeddings",
@@ -2458,9 +2458,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_vertex_ai",
       "community": 51,
-      "norm_label": "vertex ai multimodal embeddings"
+      "norm_label": "vertex ai multimodal embeddings",
+      "id": "readme_vertex_ai"
     },
     {
       "label": "Gemini on Vertex AI",
@@ -2471,9 +2471,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_gemini",
       "community": 52,
-      "norm_label": "gemini on vertex ai"
+      "norm_label": "gemini on vertex ai",
+      "id": "readme_gemini"
     },
     {
       "label": "FastAPI Backend",
@@ -2484,9 +2484,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "api_readme_fastapi",
       "community": 12,
-      "norm_label": "fastapi backend"
+      "norm_label": "fastapi backend",
+      "id": "api_readme_fastapi"
     },
     {
       "label": "Local Runtime Profile",
@@ -2497,9 +2497,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "api_readme_local_profile",
       "community": 12,
-      "norm_label": "local runtime profile"
+      "norm_label": "local runtime profile",
+      "id": "api_readme_local_profile"
     },
     {
       "label": "Public Runtime Profile",
@@ -2510,9 +2510,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "api_readme_public_profile",
       "community": 12,
-      "norm_label": "public runtime profile"
+      "norm_label": "public runtime profile",
+      "id": "api_readme_public_profile"
     },
     {
       "label": "Demo Auth Backend",
@@ -2523,9 +2523,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "api_readme_demo_auth",
       "community": 12,
-      "norm_label": "demo auth backend"
+      "norm_label": "demo auth backend",
+      "id": "api_readme_demo_auth"
     },
     {
       "label": "Firebase Auth Backend",
@@ -2536,9 +2536,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "api_readme_firebase_auth",
       "community": 12,
-      "norm_label": "firebase auth backend"
+      "norm_label": "firebase auth backend",
+      "id": "api_readme_firebase_auth"
     },
     {
       "label": "fastapi",
@@ -2549,9 +2549,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "api_requirements_fastapi",
       "community": 12,
-      "norm_label": "fastapi"
+      "norm_label": "fastapi",
+      "id": "api_requirements_fastapi"
     },
     {
       "label": "Pillow",
@@ -2562,9 +2562,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "api_requirements_pillow",
       "community": 40,
-      "norm_label": "pillow"
+      "norm_label": "pillow",
+      "id": "api_requirements_pillow"
     },
     {
       "label": "imagehash",
@@ -2575,9 +2575,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "api_requirements_imagehash",
       "community": 53,
-      "norm_label": "imagehash"
+      "norm_label": "imagehash",
+      "id": "api_requirements_imagehash"
     },
     {
       "label": "React Frontend",
@@ -2588,9 +2588,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "web_readme_react",
       "community": 54,
-      "norm_label": "react frontend"
+      "norm_label": "react frontend",
+      "id": "web_readme_react"
     },
     {
       "label": "Vite",
@@ -2601,9 +2601,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "web_readme_vite",
       "community": 55,
-      "norm_label": "vite"
+      "norm_label": "vite",
+      "id": "web_readme_vite"
     },
     {
       "label": "Asset Domain Model",
@@ -2614,9 +2614,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "architecture_asset",
       "community": 56,
-      "norm_label": "asset domain model"
+      "norm_label": "asset domain model",
+      "id": "architecture_asset"
     },
     {
       "label": "Feed Item Domain Model",
@@ -2627,9 +2627,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "architecture_feed_item",
       "community": 57,
-      "norm_label": "feed item domain model"
+      "norm_label": "feed item domain model",
+      "id": "architecture_feed_item"
     },
     {
       "label": "Match Candidate Domain Model",
@@ -2640,9 +2640,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "architecture_match_candidate",
       "community": 36,
-      "norm_label": "match candidate domain model"
+      "norm_label": "match candidate domain model",
+      "id": "architecture_match_candidate"
     },
     {
       "label": "Incident Domain Model",
@@ -2653,9 +2653,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "architecture_incident",
       "community": 36,
-      "norm_label": "incident domain model"
+      "norm_label": "incident domain model",
+      "id": "architecture_incident"
     },
     {
       "label": "Coarse Semantic Retrieval",
@@ -2666,9 +2666,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "architecture_coarse_retrieval",
       "community": 37,
-      "norm_label": "coarse semantic retrieval"
+      "norm_label": "coarse semantic retrieval",
+      "id": "architecture_coarse_retrieval"
     },
     {
       "label": "Fine Evidence Scoring",
@@ -2679,9 +2679,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "architecture_fine_scoring",
       "community": 37,
-      "norm_label": "fine evidence scoring"
+      "norm_label": "fine evidence scoring",
+      "id": "architecture_fine_scoring"
     },
     {
       "label": "SSE Event Bus",
@@ -2692,9 +2692,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "architecture_sse",
       "community": 38,
-      "norm_label": "sse event bus"
+      "norm_label": "sse event bus",
+      "id": "architecture_sse"
     },
     {
       "label": "Pub/Sub Event Layer",
@@ -2705,9 +2705,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "architecture_pubsub",
       "community": 38,
-      "norm_label": "pub/sub event layer"
+      "norm_label": "pub/sub event layer",
+      "id": "architecture_pubsub"
     },
     {
       "label": "Gemini Incident Triage",
@@ -2718,9 +2718,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "architecture_gemini_triage",
       "community": 58,
-      "norm_label": "gemini incident triage"
+      "norm_label": "gemini incident triage",
+      "id": "architecture_gemini_triage"
     },
     {
       "label": "Framer Design Inspiration",
@@ -2731,9 +2731,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "design_framer_inspiration",
       "community": 39,
-      "norm_label": "framer design inspiration"
+      "norm_label": "framer design inspiration",
+      "id": "design_framer_inspiration"
     },
     {
       "label": "PIL-based 64-bit hash",
@@ -2744,9 +2744,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "logbook_pil_hash",
       "community": 40,
-      "norm_label": "pil-based 64-bit hash"
+      "norm_label": "pil-based 64-bit hash",
+      "id": "logbook_pil_hash"
     },
     {
       "label": "Operator-First Principle",
@@ -2757,9 +2757,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "mindset_operator_first",
       "community": 59,
-      "norm_label": "operator-first principle"
+      "norm_label": "operator-first principle",
+      "id": "mindset_operator_first"
     },
     {
       "label": "Dual Trust Model",
@@ -2770,9 +2770,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "research_dual_trust",
       "community": 22,
-      "norm_label": "dual trust model"
+      "norm_label": "dual trust model",
+      "id": "research_dual_trust"
     },
     {
       "label": "MVP Local Demo Flow",
@@ -2783,9 +2783,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "status_mvp_local",
       "community": 60,
-      "norm_label": "mvp local demo flow"
+      "norm_label": "mvp local demo flow",
+      "id": "status_mvp_local"
     },
     {
       "label": "Threat Map",
@@ -2796,9 +2796,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "blueprint_threat_map",
       "community": 39,
-      "norm_label": "threat map"
+      "norm_label": "threat map",
+      "id": "blueprint_threat_map"
     },
     {
       "label": "AST-172 Original Image",
@@ -2809,9 +2809,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "original_ast_172",
       "community": 13,
-      "norm_label": "ast-172 original image"
+      "norm_label": "ast-172 original image",
+      "id": "original_ast_172"
     },
     {
       "label": "AST-172 Preview Image",
@@ -2822,9 +2822,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "preview_ast_172",
       "community": 13,
-      "norm_label": "ast-172 preview image"
+      "norm_label": "ast-172 preview image",
+      "id": "preview_ast_172"
     },
     {
       "label": "AST-172 Frame 1",
@@ -2835,9 +2835,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "frame_1_ast_172",
       "community": 13,
-      "norm_label": "ast-172 frame 1"
+      "norm_label": "ast-172 frame 1",
+      "id": "frame_1_ast_172"
     },
     {
       "label": "AST-188 Original Image",
@@ -2848,9 +2848,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "original_ast_188",
       "community": 13,
-      "norm_label": "ast-188 original image"
+      "norm_label": "ast-188 original image",
+      "id": "original_ast_188"
     },
     {
       "label": "FEED-1001 Media Image",
@@ -2861,9 +2861,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "media_feed_1001",
       "community": 23,
-      "norm_label": "feed-1001 media image"
+      "norm_label": "feed-1001 media image",
+      "id": "media_feed_1001"
     },
     {
       "label": "FEED-1001 Preview Image",
@@ -2874,9 +2874,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "preview_feed_1001",
       "community": 23,
-      "norm_label": "feed-1001 preview image"
+      "norm_label": "feed-1001 preview image",
+      "id": "preview_feed_1001"
     },
     {
       "label": "FEED-1002 Media Image",
@@ -2887,9 +2887,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "media_feed_1002",
       "community": 23,
-      "norm_label": "feed-1002 media image"
+      "norm_label": "feed-1002 media image",
+      "id": "media_feed_1002"
     }
   ],
   "links": [
@@ -4713,9 +4713,9 @@
       "weight": 0.8,
       "_src": "feeds_rationale_52",
       "_tgt": "feed_item_feeditemlistresponse",
+      "confidence_score": 0.5,
       "source": "feeds_rationale_52",
-      "target": "feed_item_feeditemlistresponse",
-      "confidence_score": 0.5
+      "target": "feed_item_feeditemlistresponse"
     },
     {
       "relation": "uses",
@@ -4725,9 +4725,9 @@
       "weight": 0.8,
       "_src": "feeds_rationale_52",
       "_tgt": "feed_item_feeditemsummary",
+      "confidence_score": 0.5,
       "source": "feeds_rationale_52",
-      "target": "feed_item_feeditemsummary",
-      "confidence_score": 0.5
+      "target": "feed_item_feeditemsummary"
     },
     {
       "relation": "contains",
@@ -5264,8 +5264,8 @@
       "source_file": "apps\\api\\app\\services\\authn.py",
       "source_location": "L25",
       "weight": 1.0,
-      "_src": "authn_auth_backend",
-      "_tgt": "config_get_settings",
+      "_src": "config_get_settings",
+      "_tgt": "authn_auth_backend",
       "source": "config_get_settings",
       "target": "authn_auth_backend"
     },
@@ -5276,8 +5276,8 @@
       "source_file": "apps\\api\\app\\services\\authn.py",
       "source_location": "L40",
       "weight": 1.0,
-      "_src": "authn_verify_demo_bearer",
-      "_tgt": "config_get_settings",
+      "_src": "config_get_settings",
+      "_tgt": "authn_verify_demo_bearer",
       "source": "config_get_settings",
       "target": "authn_verify_demo_bearer"
     },
@@ -5288,8 +5288,8 @@
       "source_file": "apps\\api\\app\\services\\authn.py",
       "source_location": "L58",
       "weight": 1.0,
-      "_src": "authn_verify_firebase_id_token",
-      "_tgt": "config_get_settings",
+      "_src": "config_get_settings",
+      "_tgt": "authn_verify_firebase_id_token",
       "source": "config_get_settings",
       "target": "authn_verify_firebase_id_token"
     },
@@ -5300,8 +5300,8 @@
       "source_file": "apps\\api\\app\\services\\db.py",
       "source_location": "L120",
       "weight": 1.0,
-      "_src": "db_db_path",
-      "_tgt": "config_get_settings",
+      "_src": "config_get_settings",
+      "_tgt": "db_db_path",
       "source": "config_get_settings",
       "target": "db_db_path"
     },
@@ -5312,8 +5312,8 @@
       "source_file": "apps\\api\\app\\services\\seeder.py",
       "source_location": "L185",
       "weight": 1.0,
-      "_src": "seeder_seed_championship_final",
-      "_tgt": "config_get_settings",
+      "_src": "config_get_settings",
+      "_tgt": "seeder_seed_championship_final",
       "source": "config_get_settings",
       "target": "seeder_seed_championship_final"
     },
@@ -5324,8 +5324,8 @@
       "source_file": "apps\\api\\app\\services\\storage.py",
       "source_location": "L23",
       "weight": 1.0,
-      "_src": "storage_media_root",
-      "_tgt": "config_get_settings",
+      "_src": "config_get_settings",
+      "_tgt": "storage_media_root",
       "source": "config_get_settings",
       "target": "storage_media_root"
     },
@@ -5336,8 +5336,8 @@
       "source_file": "apps\\api\\app\\services\\triage.py",
       "source_location": "L79",
       "weight": 1.0,
-      "_src": "triage_generate_triage",
-      "_tgt": "config_get_settings",
+      "_src": "config_get_settings",
+      "_tgt": "triage_generate_triage",
       "source": "config_get_settings",
       "target": "triage_generate_triage"
     },
@@ -5383,11 +5383,11 @@
       "source_file": "apps\\api\\app\\schemas\\incident.py",
       "source_location": "L5",
       "weight": 0.8,
-      "_src": "incident_incidentsummary",
-      "_tgt": "action_actionrecord",
+      "_src": "action_actionrecord",
+      "_tgt": "incident_incidentsummary",
+      "confidence_score": 0.5,
       "source": "action_actionrecord",
-      "target": "incident_incidentsummary",
-      "confidence_score": 0.5
+      "target": "incident_incidentsummary"
     },
     {
       "relation": "uses",
@@ -5395,11 +5395,11 @@
       "source_file": "apps\\api\\app\\schemas\\incident.py",
       "source_location": "L5",
       "weight": 0.8,
-      "_src": "incident_incidentlistresponse",
-      "_tgt": "action_actionrecord",
+      "_src": "action_actionrecord",
+      "_tgt": "incident_incidentlistresponse",
+      "confidence_score": 0.5,
       "source": "action_actionrecord",
-      "target": "incident_incidentlistresponse",
-      "confidence_score": 0.5
+      "target": "incident_incidentlistresponse"
     },
     {
       "relation": "uses",
@@ -5407,11 +5407,11 @@
       "source_file": "apps\\api\\app\\schemas\\incident.py",
       "source_location": "L5",
       "weight": 0.8,
-      "_src": "incident_assetbrief",
-      "_tgt": "action_actionrecord",
+      "_src": "action_actionrecord",
+      "_tgt": "incident_assetbrief",
+      "confidence_score": 0.5,
       "source": "action_actionrecord",
-      "target": "incident_assetbrief",
-      "confidence_score": 0.5
+      "target": "incident_assetbrief"
     },
     {
       "relation": "uses",
@@ -5419,11 +5419,11 @@
       "source_file": "apps\\api\\app\\schemas\\incident.py",
       "source_location": "L5",
       "weight": 0.8,
-      "_src": "incident_incidentdetail",
-      "_tgt": "action_actionrecord",
+      "_src": "action_actionrecord",
+      "_tgt": "incident_incidentdetail",
+      "confidence_score": 0.5,
       "source": "action_actionrecord",
-      "target": "incident_incidentdetail",
-      "confidence_score": 0.5
+      "target": "incident_incidentdetail"
     },
     {
       "relation": "uses",
@@ -5431,11 +5431,11 @@
       "source_file": "apps\\api\\app\\schemas\\incident.py",
       "source_location": "L5",
       "weight": 0.8,
-      "_src": "incident_rationale_11",
-      "_tgt": "action_actionrecord",
+      "_src": "action_actionrecord",
+      "_tgt": "incident_rationale_11",
+      "confidence_score": 0.5,
       "source": "action_actionrecord",
-      "target": "incident_rationale_11",
-      "confidence_score": 0.5
+      "target": "incident_rationale_11"
     },
     {
       "relation": "contains",
@@ -5503,11 +5503,11 @@
       "source_file": "apps\\api\\app\\services\\demo_data.py",
       "source_location": "L9",
       "weight": 0.8,
-      "_src": "demo_data_rationale_1",
-      "_tgt": "asset_assetsummary",
+      "_src": "asset_assetsummary",
+      "_tgt": "demo_data_rationale_1",
+      "confidence_score": 0.5,
       "source": "asset_assetsummary",
-      "target": "demo_data_rationale_1",
-      "confidence_score": 0.5
+      "target": "demo_data_rationale_1"
     },
     {
       "relation": "contains",
@@ -5534,6 +5534,18 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps\\api\\app\\services\\demo_data.py",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_src": "dashboard_dashboardmetric",
+      "_tgt": "demo_data_build_dashboard_overview",
+      "source": "dashboard_dashboardmetric",
+      "target": "demo_data_build_dashboard_overview"
+    },
+    {
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "apps\\api\\app\\schemas\\dashboard.py",
@@ -5541,9 +5553,9 @@
       "weight": 0.8,
       "_src": "dashboard_dashboardmetric",
       "_tgt": "incident_incidentsummary",
+      "confidence_score": 0.5,
       "source": "dashboard_dashboardmetric",
-      "target": "incident_incidentsummary",
-      "confidence_score": 0.5
+      "target": "incident_incidentsummary"
     },
     {
       "relation": "uses",
@@ -5551,22 +5563,22 @@
       "source_file": "apps\\api\\app\\services\\demo_data.py",
       "source_location": "L10",
       "weight": 0.8,
-      "_src": "demo_data_rationale_1",
-      "_tgt": "dashboard_dashboardmetric",
+      "_src": "dashboard_dashboardmetric",
+      "_tgt": "demo_data_rationale_1",
+      "confidence_score": 0.5,
       "source": "dashboard_dashboardmetric",
-      "target": "demo_data_rationale_1",
-      "confidence_score": 0.5
+      "target": "demo_data_rationale_1"
     },
     {
       "relation": "calls",
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "apps\\api\\app\\services\\demo_data.py",
-      "source_location": "L17",
+      "source_location": "L15",
       "weight": 1.0,
-      "_src": "demo_data_build_dashboard_overview",
-      "_tgt": "dashboard_dashboardmetric",
-      "source": "dashboard_dashboardmetric",
+      "_src": "dashboard_dashboardoverviewresponse",
+      "_tgt": "demo_data_build_dashboard_overview",
+      "source": "dashboard_dashboardoverviewresponse",
       "target": "demo_data_build_dashboard_overview"
     },
     {
@@ -5577,9 +5589,9 @@
       "weight": 0.8,
       "_src": "dashboard_dashboardoverviewresponse",
       "_tgt": "incident_incidentsummary",
+      "confidence_score": 0.5,
       "source": "dashboard_dashboardoverviewresponse",
-      "target": "incident_incidentsummary",
-      "confidence_score": 0.5
+      "target": "incident_incidentsummary"
     },
     {
       "relation": "uses",
@@ -5587,23 +5599,11 @@
       "source_file": "apps\\api\\app\\services\\demo_data.py",
       "source_location": "L10",
       "weight": 0.8,
-      "_src": "demo_data_rationale_1",
-      "_tgt": "dashboard_dashboardoverviewresponse",
+      "_src": "dashboard_dashboardoverviewresponse",
+      "_tgt": "demo_data_rationale_1",
+      "confidence_score": 0.5,
       "source": "dashboard_dashboardoverviewresponse",
-      "target": "demo_data_rationale_1",
-      "confidence_score": 0.5
-    },
-    {
-      "relation": "calls",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "apps\\api\\app\\services\\demo_data.py",
-      "source_location": "L15",
-      "weight": 1.0,
-      "_src": "demo_data_build_dashboard_overview",
-      "_tgt": "dashboard_dashboardoverviewresponse",
-      "source": "dashboard_dashboardoverviewresponse",
-      "target": "demo_data_build_dashboard_overview"
+      "target": "demo_data_rationale_1"
     },
     {
       "relation": "contains",
@@ -5659,11 +5659,11 @@
       "source_file": "apps\\api\\app\\schemas\\incident.py",
       "source_location": "L6",
       "weight": 0.8,
-      "_src": "incident_incidentsummary",
-      "_tgt": "feed_item_feeditemsummary",
+      "_src": "feed_item_feeditemsummary",
+      "_tgt": "incident_incidentsummary",
+      "confidence_score": 0.5,
       "source": "feed_item_feeditemsummary",
-      "target": "incident_incidentsummary",
-      "confidence_score": 0.5
+      "target": "incident_incidentsummary"
     },
     {
       "relation": "uses",
@@ -5671,11 +5671,11 @@
       "source_file": "apps\\api\\app\\schemas\\incident.py",
       "source_location": "L6",
       "weight": 0.8,
-      "_src": "incident_incidentlistresponse",
-      "_tgt": "feed_item_feeditemsummary",
+      "_src": "feed_item_feeditemsummary",
+      "_tgt": "incident_incidentlistresponse",
+      "confidence_score": 0.5,
       "source": "feed_item_feeditemsummary",
-      "target": "incident_incidentlistresponse",
-      "confidence_score": 0.5
+      "target": "incident_incidentlistresponse"
     },
     {
       "relation": "uses",
@@ -5683,11 +5683,11 @@
       "source_file": "apps\\api\\app\\schemas\\incident.py",
       "source_location": "L6",
       "weight": 0.8,
-      "_src": "incident_assetbrief",
-      "_tgt": "feed_item_feeditemsummary",
+      "_src": "feed_item_feeditemsummary",
+      "_tgt": "incident_assetbrief",
+      "confidence_score": 0.5,
       "source": "feed_item_feeditemsummary",
-      "target": "incident_assetbrief",
-      "confidence_score": 0.5
+      "target": "incident_assetbrief"
     },
     {
       "relation": "uses",
@@ -5695,11 +5695,11 @@
       "source_file": "apps\\api\\app\\schemas\\incident.py",
       "source_location": "L6",
       "weight": 0.8,
-      "_src": "incident_incidentdetail",
-      "_tgt": "feed_item_feeditemsummary",
+      "_src": "feed_item_feeditemsummary",
+      "_tgt": "incident_incidentdetail",
+      "confidence_score": 0.5,
       "source": "feed_item_feeditemsummary",
-      "target": "incident_incidentdetail",
-      "confidence_score": 0.5
+      "target": "incident_incidentdetail"
     },
     {
       "relation": "uses",
@@ -5707,11 +5707,11 @@
       "source_file": "apps\\api\\app\\schemas\\incident.py",
       "source_location": "L6",
       "weight": 0.8,
-      "_src": "incident_rationale_11",
-      "_tgt": "feed_item_feeditemsummary",
+      "_src": "feed_item_feeditemsummary",
+      "_tgt": "incident_rationale_11",
+      "confidence_score": 0.5,
       "source": "feed_item_feeditemsummary",
-      "target": "incident_rationale_11",
-      "confidence_score": 0.5
+      "target": "incident_rationale_11"
     },
     {
       "relation": "contains",
@@ -5781,9 +5781,9 @@
       "weight": 0.8,
       "_src": "incident_incidentsummary",
       "_tgt": "match_candidate_matchcandidate",
+      "confidence_score": 0.5,
       "source": "incident_incidentsummary",
-      "target": "match_candidate_matchcandidate",
-      "confidence_score": 0.5
+      "target": "match_candidate_matchcandidate"
     },
     {
       "relation": "uses",
@@ -5791,11 +5791,11 @@
       "source_file": "apps\\api\\app\\services\\demo_data.py",
       "source_location": "L11",
       "weight": 0.8,
-      "_src": "demo_data_rationale_1",
-      "_tgt": "incident_incidentsummary",
+      "_src": "incident_incidentsummary",
+      "_tgt": "demo_data_rationale_1",
+      "confidence_score": 0.5,
       "source": "incident_incidentsummary",
-      "target": "demo_data_rationale_1",
-      "confidence_score": 0.5
+      "target": "demo_data_rationale_1"
     },
     {
       "relation": "uses",
@@ -5805,9 +5805,9 @@
       "weight": 0.8,
       "_src": "incident_incidentlistresponse",
       "_tgt": "match_candidate_matchcandidate",
+      "confidence_score": 0.5,
       "source": "incident_incidentlistresponse",
-      "target": "match_candidate_matchcandidate",
-      "confidence_score": 0.5
+      "target": "match_candidate_matchcandidate"
     },
     {
       "relation": "uses",
@@ -5817,9 +5817,9 @@
       "weight": 0.8,
       "_src": "incident_assetbrief",
       "_tgt": "match_candidate_matchcandidate",
+      "confidence_score": 0.5,
       "source": "incident_assetbrief",
-      "target": "match_candidate_matchcandidate",
-      "confidence_score": 0.5
+      "target": "match_candidate_matchcandidate"
     },
     {
       "relation": "uses",
@@ -5829,9 +5829,9 @@
       "weight": 0.8,
       "_src": "incident_incidentdetail",
       "_tgt": "match_candidate_matchcandidate",
+      "confidence_score": 0.5,
       "source": "incident_incidentdetail",
-      "target": "match_candidate_matchcandidate",
-      "confidence_score": 0.5
+      "target": "match_candidate_matchcandidate"
     },
     {
       "relation": "uses",
@@ -5841,9 +5841,9 @@
       "weight": 0.8,
       "_src": "incident_rationale_11",
       "_tgt": "match_candidate_matchcandidate",
+      "confidence_score": 0.5,
       "source": "incident_rationale_11",
-      "target": "match_candidate_matchcandidate",
-      "confidence_score": 0.5
+      "target": "match_candidate_matchcandidate"
     },
     {
       "relation": "contains",
@@ -6344,8 +6344,8 @@
       "source_file": "apps\\api\\app\\services\\repos.py",
       "source_location": "L120",
       "weight": 1.0,
-      "_src": "repos_list_incidents",
-      "_tgt": "db_get_conn",
+      "_src": "db_get_conn",
+      "_tgt": "repos_list_incidents",
       "source": "db_get_conn",
       "target": "repos_list_incidents"
     },
@@ -6356,8 +6356,8 @@
       "source_file": "apps\\api\\app\\services\\repos.py",
       "source_location": "L126",
       "weight": 1.0,
-      "_src": "repos_get_incident_detail",
-      "_tgt": "db_get_conn",
+      "_src": "db_get_conn",
+      "_tgt": "repos_get_incident_detail",
       "source": "db_get_conn",
       "target": "repos_get_incident_detail"
     },
@@ -6368,8 +6368,8 @@
       "source_file": "apps\\api\\app\\services\\repos.py",
       "source_location": "L189",
       "weight": 1.0,
-      "_src": "repos_list_assets",
-      "_tgt": "db_get_conn",
+      "_src": "db_get_conn",
+      "_tgt": "repos_list_assets",
       "source": "db_get_conn",
       "target": "repos_list_assets"
     },
@@ -6380,8 +6380,8 @@
       "source_file": "apps\\api\\app\\services\\repos.py",
       "source_location": "L206",
       "weight": 1.0,
-      "_src": "repos_get_asset_detail",
-      "_tgt": "db_get_conn",
+      "_src": "db_get_conn",
+      "_tgt": "repos_get_asset_detail",
       "source": "db_get_conn",
       "target": "repos_get_asset_detail"
     },
@@ -6392,8 +6392,8 @@
       "source_file": "apps\\api\\app\\services\\repos.py",
       "source_location": "L237",
       "weight": 1.0,
-      "_src": "repos_list_feed_items",
-      "_tgt": "db_get_conn",
+      "_src": "db_get_conn",
+      "_tgt": "repos_list_feed_items",
       "source": "db_get_conn",
       "target": "repos_list_feed_items"
     },
@@ -6404,8 +6404,8 @@
       "source_file": "apps\\api\\app\\services\\repos.py",
       "source_location": "L242",
       "weight": 1.0,
-      "_src": "repos_get_feed_item",
-      "_tgt": "db_get_conn",
+      "_src": "db_get_conn",
+      "_tgt": "repos_get_feed_item",
       "source": "db_get_conn",
       "target": "repos_get_feed_item"
     },
@@ -6416,8 +6416,8 @@
       "source_file": "apps\\api\\app\\services\\repos.py",
       "source_location": "L253",
       "weight": 1.0,
-      "_src": "repos_count_incidents_by_status",
-      "_tgt": "db_get_conn",
+      "_src": "db_get_conn",
+      "_tgt": "repos_count_incidents_by_status",
       "source": "db_get_conn",
       "target": "repos_count_incidents_by_status"
     },
@@ -6428,8 +6428,8 @@
       "source_file": "apps\\api\\app\\services\\repos.py",
       "source_location": "L263",
       "weight": 1.0,
-      "_src": "repos_count_assets_by_type",
-      "_tgt": "db_get_conn",
+      "_src": "db_get_conn",
+      "_tgt": "repos_count_assets_by_type",
       "source": "db_get_conn",
       "target": "repos_count_assets_by_type"
     },
@@ -6440,8 +6440,8 @@
       "source_file": "apps\\api\\app\\services\\repos.py",
       "source_location": "L270",
       "weight": 1.0,
-      "_src": "repos_insert_action",
-      "_tgt": "db_get_conn",
+      "_src": "db_get_conn",
+      "_tgt": "repos_insert_action",
       "source": "db_get_conn",
       "target": "repos_insert_action"
     },
@@ -6452,8 +6452,8 @@
       "source_file": "apps\\api\\app\\services\\repos.py",
       "source_location": "L281",
       "weight": 1.0,
-      "_src": "repos_update_incident_status",
-      "_tgt": "db_get_conn",
+      "_src": "db_get_conn",
+      "_tgt": "repos_update_incident_status",
       "source": "db_get_conn",
       "target": "repos_update_incident_status"
     },
@@ -6464,8 +6464,8 @@
       "source_file": "apps\\api\\app\\services\\repos.py",
       "source_location": "L292",
       "weight": 1.0,
-      "_src": "repos_upsert_user",
-      "_tgt": "db_get_conn",
+      "_src": "db_get_conn",
+      "_tgt": "repos_upsert_user",
       "source": "db_get_conn",
       "target": "repos_upsert_user"
     },
@@ -6476,8 +6476,8 @@
       "source_file": "apps\\api\\app\\services\\repos.py",
       "source_location": "L309",
       "weight": 1.0,
-      "_src": "repos_get_user",
-      "_tgt": "db_get_conn",
+      "_src": "db_get_conn",
+      "_tgt": "repos_get_user",
       "source": "db_get_conn",
       "target": "repos_get_user"
     },
@@ -6488,8 +6488,8 @@
       "source_file": "apps\\api\\app\\services\\repos.py",
       "source_location": "L314",
       "weight": 1.0,
-      "_src": "repos_get_all_assets_with_phash",
-      "_tgt": "db_get_conn",
+      "_src": "db_get_conn",
+      "_tgt": "repos_get_all_assets_with_phash",
       "source": "db_get_conn",
       "target": "repos_get_all_assets_with_phash"
     },
@@ -6500,8 +6500,8 @@
       "source_file": "apps\\api\\app\\services\\seeder.py",
       "source_location": "L209",
       "weight": 1.0,
-      "_src": "seeder_seed_championship_final",
-      "_tgt": "db_get_conn",
+      "_src": "db_get_conn",
+      "_tgt": "seeder_seed_championship_final",
       "source": "db_get_conn",
       "target": "seeder_seed_championship_final"
     },
@@ -6536,8 +6536,8 @@
       "source_file": "apps\\api\\app\\services\\seeder.py",
       "source_location": "L188",
       "weight": 1.0,
-      "_src": "seeder_seed_championship_final",
-      "_tgt": "db_reset_db",
+      "_src": "db_reset_db",
+      "_tgt": "seeder_seed_championship_final",
       "source": "db_reset_db",
       "target": "seeder_seed_championship_final"
     },
@@ -6992,8 +6992,8 @@
       "source_file": "apps\\api\\app\\services\\seeder.py",
       "source_location": "L275",
       "weight": 1.0,
-      "_src": "seeder_seed_championship_final",
-      "_tgt": "repos_new_candidate_id",
+      "_src": "repos_new_candidate_id",
+      "_tgt": "seeder_seed_championship_final",
       "source": "repos_new_candidate_id",
       "target": "seeder_seed_championship_final"
     },
@@ -7064,8 +7064,8 @@
       "source_file": "apps\\api\\app\\services\\seeder.py",
       "source_location": "L191",
       "weight": 1.0,
-      "_src": "seeder_seed_championship_final",
-      "_tgt": "repos_upsert_user",
+      "_src": "repos_upsert_user",
+      "_tgt": "seeder_seed_championship_final",
       "source": "repos_upsert_user",
       "target": "seeder_seed_championship_final"
     },
@@ -8372,8 +8372,8 @@
       "source_file": "docs/research-notes.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "research_dual_trust",
-      "_tgt": "readme_c2pa",
+      "_src": "readme_c2pa",
+      "_tgt": "research_dual_trust",
       "source": "readme_c2pa",
       "target": "research_dual_trust"
     },
@@ -8408,8 +8408,8 @@
       "source_file": "apps/api/requirements.txt",
       "source_location": null,
       "weight": 1.0,
-      "_src": "api_requirements_fastapi",
-      "_tgt": "api_readme_fastapi",
+      "_src": "api_readme_fastapi",
+      "_tgt": "api_requirements_fastapi",
       "source": "api_readme_fastapi",
       "target": "api_requirements_fastapi"
     },
@@ -8444,8 +8444,8 @@
       "source_file": "docs/logbook.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "logbook_pil_hash",
-      "_tgt": "api_requirements_pillow",
+      "_src": "api_requirements_pillow",
+      "_tgt": "logbook_pil_hash",
       "source": "api_requirements_pillow",
       "target": "logbook_pil_hash"
     },
@@ -8456,8 +8456,8 @@
       "source_file": "docs/architecture.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "architecture_incident",
-      "_tgt": "architecture_match_candidate",
+      "_src": "architecture_match_candidate",
+      "_tgt": "architecture_incident",
       "source": "architecture_match_candidate",
       "target": "architecture_incident"
     },
@@ -8480,8 +8480,8 @@
       "source_file": "docs/architecture.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "architecture_pubsub",
-      "_tgt": "architecture_sse",
+      "_src": "architecture_sse",
+      "_tgt": "architecture_pubsub",
       "source": "architecture_sse",
       "target": "architecture_pubsub"
     },
@@ -8504,8 +8504,8 @@
       "source_file": "apps/api/var/media/assets/AST-172/preview.jpg",
       "source_location": null,
       "weight": 1.0,
-      "_src": "preview_ast_172",
-      "_tgt": "original_ast_172",
+      "_src": "original_ast_172",
+      "_tgt": "preview_ast_172",
       "source": "original_ast_172",
       "target": "preview_ast_172"
     },
@@ -8516,8 +8516,8 @@
       "source_file": "apps/api/var/media/assets/AST-172/frames/frame_1.jpg",
       "source_location": null,
       "weight": 1.0,
-      "_src": "frame_1_ast_172",
-      "_tgt": "original_ast_172",
+      "_src": "original_ast_172",
+      "_tgt": "frame_1_ast_172",
       "source": "original_ast_172",
       "target": "frame_1_ast_172"
     },
@@ -8528,8 +8528,8 @@
       "source_file": "apps/api/var/media/assets/AST-188/original.jpg",
       "source_location": null,
       "weight": 1.0,
-      "_src": "original_ast_188",
-      "_tgt": "original_ast_172",
+      "_src": "original_ast_172",
+      "_tgt": "original_ast_188",
       "source": "original_ast_172",
       "target": "original_ast_188"
     },
@@ -8540,8 +8540,8 @@
       "source_file": "apps/api/var/media/feeds/FEED-1001/preview.jpg",
       "source_location": null,
       "weight": 1.0,
-      "_src": "preview_feed_1001",
-      "_tgt": "media_feed_1001",
+      "_src": "media_feed_1001",
+      "_tgt": "preview_feed_1001",
       "source": "media_feed_1001",
       "target": "preview_feed_1001"
     },
@@ -8552,8 +8552,8 @@
       "source_file": "apps/api/var/media/feeds/FEED-1002/media.jpg",
       "source_location": null,
       "weight": 1.0,
-      "_src": "media_feed_1002",
-      "_tgt": "media_feed_1001",
+      "_src": "media_feed_1001",
+      "_tgt": "media_feed_1002",
       "source": "media_feed_1001",
       "target": "media_feed_1002"
     }

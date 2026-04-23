@@ -1,75 +1,76 @@
-# Graph Report - .  (2026-04-24)
+# Graph Report - D:\kill-cont-fresh  (2026-04-24)
 
 ## Corpus Check
-- Corpus is ~40,229 words - fits in a single context window. You may not need a graph.
+- 68 files · ~64,469 words
+- Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
 - 300 nodes · 472 edges · 61 communities detected
 - Extraction: 61% EXTRACTED · 39% INFERRED · 0% AMBIGUOUS · INFERRED: 183 edges (avg confidence: 0.76)
-- Token cost: 100 input · 100 output
+- Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
-- [[_COMMUNITY_Database and Repositories|Database and Repositories]]
-- [[_COMMUNITY_Authentication and Configuration|Authentication and Configuration]]
-- [[_COMMUNITY_Media Storage and Seeding|Media Storage and Seeding]]
-- [[_COMMUNITY_Incident Management|Incident Management]]
-- [[_COMMUNITY_Feeds and Similarity Match|Feeds and Similarity Match]]
-- [[_COMMUNITY_Dashboard and Events Bus|Dashboard and Events Bus]]
-- [[_COMMUNITY_Live Demo Simulation|Live Demo Simulation]]
-- [[_COMMUNITY_Live Watch and Hooks|Live Watch and Hooks]]
-- [[_COMMUNITY_Asset API Routes|Asset API Routes]]
-- [[_COMMUNITY_API Initialization Module|API Initialization Module]]
-- [[_COMMUNITY_Web API Client|Web API Client]]
-- [[_COMMUNITY_Gemini AI Triage|Gemini AI Triage]]
-- [[_COMMUNITY_API Setup Documentation|API Setup Documentation]]
-- [[_COMMUNITY_Frame AST Previews|Frame AST Previews]]
-- [[_COMMUNITY_Event Streaming Routes|Event Streaming Routes]]
-- [[_COMMUNITY_Assets Web Page|Assets Web Page]]
-- [[_COMMUNITY_Asset React Hooks|Asset React Hooks]]
-- [[_COMMUNITY_Evidence Web Page|Evidence Web Page]]
-- [[_COMMUNITY_Incident Detail Page|Incident Detail Page]]
-- [[_COMMUNITY_Incidents Web Page|Incidents Web Page]]
-- [[_COMMUNITY_Incident Detail Hooks|Incident Detail Hooks]]
-- [[_COMMUNITY_Dashboard Overview Page|Dashboard Overview Page]]
-- [[_COMMUNITY_Research and Trust Docs|Research and Trust Docs]]
-- [[_COMMUNITY_Feed Media Previews|Feed Media Previews]]
-- [[_COMMUNITY_API Health Check|API Health Check]]
-- [[_COMMUNITY_Web App Root Component|Web App Root Component]]
-- [[_COMMUNITY_Web App Shell Component|Web App Shell Component]]
-- [[_COMMUNITY_App Background Layout|App Background Layout]]
-- [[_COMMUNITY_Top Navigation Bar|Top Navigation Bar]]
-- [[_COMMUNITY_Asset Upload Modal|Asset Upload Modal]]
-- [[_COMMUNITY_Protected Auth Route|Protected Auth Route]]
-- [[_COMMUNITY_Sign In Web Page|Sign In Web Page]]
-- [[_COMMUNITY_Auth React Hook|Auth React Hook]]
-- [[_COMMUNITY_Demo Control Panel|Demo Control Panel]]
-- [[_COMMUNITY_Monitor Web Page|Monitor Web Page]]
-- [[_COMMUNITY_Settings Web Page|Settings Web Page]]
-- [[_COMMUNITY_Incident Architecture Docs|Incident Architecture Docs]]
-- [[_COMMUNITY_Scoring Architecture Docs|Scoring Architecture Docs]]
-- [[_COMMUNITY_PubSub Architecture Docs|PubSub Architecture Docs]]
-- [[_COMMUNITY_Design Threat Blueprints|Design Threat Blueprints]]
-- [[_COMMUNITY_Pillow Image Requirements|Pillow Image Requirements]]
-- [[_COMMUNITY_API Router Configuration|API Router Configuration]]
-- [[_COMMUNITY_API Routes Initialization|API Routes Initialization]]
-- [[_COMMUNITY_Vite TypeScript Declarations|Vite TypeScript Declarations]]
-- [[_COMMUNITY_Vite JavaScript Config|Vite JavaScript Config]]
-- [[_COMMUNITY_Vite TypeScript Config|Vite TypeScript Config]]
-- [[_COMMUNITY_Web Entry Point|Web Entry Point]]
-- [[_COMMUNITY_Web Route Setup|Web Route Setup]]
-- [[_COMMUNITY_Marketing Landing Page|Marketing Landing Page]]
-- [[_COMMUNITY_Web Mock Data|Web Mock Data]]
-- [[_COMMUNITY_Web TypeScript Types|Web TypeScript Types]]
-- [[_COMMUNITY_Vertex AI Documentation|Vertex AI Documentation]]
-- [[_COMMUNITY_Gemini AI Documentation|Gemini AI Documentation]]
-- [[_COMMUNITY_ImageHash Requirements|ImageHash Requirements]]
-- [[_COMMUNITY_React Framework Documentation|React Framework Documentation]]
-- [[_COMMUNITY_Vite Tooling Documentation|Vite Tooling Documentation]]
-- [[_COMMUNITY_Asset Architecture Docs|Asset Architecture Docs]]
-- [[_COMMUNITY_Feed Item Architecture|Feed Item Architecture]]
-- [[_COMMUNITY_Gemini Triage Architecture|Gemini Triage Architecture]]
-- [[_COMMUNITY_Mindset Concepts Docs|Mindset Concepts Docs]]
-- [[_COMMUNITY_Local MVP Status|Local MVP Status]]
+- [[_COMMUNITY_Community 0|Community 0]]
+- [[_COMMUNITY_Community 1|Community 1]]
+- [[_COMMUNITY_Community 2|Community 2]]
+- [[_COMMUNITY_Community 3|Community 3]]
+- [[_COMMUNITY_Community 4|Community 4]]
+- [[_COMMUNITY_Community 5|Community 5]]
+- [[_COMMUNITY_Community 6|Community 6]]
+- [[_COMMUNITY_Community 7|Community 7]]
+- [[_COMMUNITY_Community 8|Community 8]]
+- [[_COMMUNITY_Community 9|Community 9]]
+- [[_COMMUNITY_Community 10|Community 10]]
+- [[_COMMUNITY_Community 11|Community 11]]
+- [[_COMMUNITY_Community 12|Community 12]]
+- [[_COMMUNITY_Community 13|Community 13]]
+- [[_COMMUNITY_Community 14|Community 14]]
+- [[_COMMUNITY_Community 15|Community 15]]
+- [[_COMMUNITY_Community 16|Community 16]]
+- [[_COMMUNITY_Community 17|Community 17]]
+- [[_COMMUNITY_Community 18|Community 18]]
+- [[_COMMUNITY_Community 19|Community 19]]
+- [[_COMMUNITY_Community 20|Community 20]]
+- [[_COMMUNITY_Community 21|Community 21]]
+- [[_COMMUNITY_Community 22|Community 22]]
+- [[_COMMUNITY_Community 23|Community 23]]
+- [[_COMMUNITY_Community 24|Community 24]]
+- [[_COMMUNITY_Community 25|Community 25]]
+- [[_COMMUNITY_Community 26|Community 26]]
+- [[_COMMUNITY_Community 27|Community 27]]
+- [[_COMMUNITY_Community 28|Community 28]]
+- [[_COMMUNITY_Community 29|Community 29]]
+- [[_COMMUNITY_Community 30|Community 30]]
+- [[_COMMUNITY_Community 31|Community 31]]
+- [[_COMMUNITY_Community 32|Community 32]]
+- [[_COMMUNITY_Community 33|Community 33]]
+- [[_COMMUNITY_Community 34|Community 34]]
+- [[_COMMUNITY_Community 35|Community 35]]
+- [[_COMMUNITY_Community 36|Community 36]]
+- [[_COMMUNITY_Community 37|Community 37]]
+- [[_COMMUNITY_Community 38|Community 38]]
+- [[_COMMUNITY_Community 39|Community 39]]
+- [[_COMMUNITY_Community 40|Community 40]]
+- [[_COMMUNITY_Community 41|Community 41]]
+- [[_COMMUNITY_Community 42|Community 42]]
+- [[_COMMUNITY_Community 43|Community 43]]
+- [[_COMMUNITY_Community 44|Community 44]]
+- [[_COMMUNITY_Community 45|Community 45]]
+- [[_COMMUNITY_Community 46|Community 46]]
+- [[_COMMUNITY_Community 47|Community 47]]
+- [[_COMMUNITY_Community 48|Community 48]]
+- [[_COMMUNITY_Community 49|Community 49]]
+- [[_COMMUNITY_Community 50|Community 50]]
+- [[_COMMUNITY_Community 51|Community 51]]
+- [[_COMMUNITY_Community 52|Community 52]]
+- [[_COMMUNITY_Community 53|Community 53]]
+- [[_COMMUNITY_Community 54|Community 54]]
+- [[_COMMUNITY_Community 55|Community 55]]
+- [[_COMMUNITY_Community 56|Community 56]]
+- [[_COMMUNITY_Community 57|Community 57]]
+- [[_COMMUNITY_Community 58|Community 58]]
+- [[_COMMUNITY_Community 59|Community 59]]
+- [[_COMMUNITY_Community 60|Community 60]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `simulate_incident()` - 25 edges
@@ -102,336 +103,336 @@
 
 ## Communities
 
-### Community 0 - "Database and Repositories"
+### Community 0 - "Community 0"
 Cohesion: 0.1
 Nodes (34): _db_path(), _ensure_parent(), get_conn(), init_db(), SQLite data layer for KillCont MVP.  One sqlite file at ``var/app.db``. The mo, Context-managed sqlite connection with dict rows and foreign keys on., Apply schema, idempotent. Called from FastAPI startup hook., Drop every table, recreate schema. Used by /demo/reset. (+26 more)
 
-### Community 1 - "Authentication and Configuration"
+### Community 1 - "Community 1"
 Cohesion: 0.12
 Nodes (20): auth_backend(), AuthConfigurationError, authenticate_request_token(), AuthError, AuthIdentity, _extract_bearer_raw(), verify_demo_bearer(), verify_firebase_bearer() (+12 more)
 
-### Community 2 - "Media Storage and Seeding"
+### Community 2 - "Community 2"
 Cohesion: 0.13
 Nodes (26): AssetDetail, get_asset(), upload_asset_media(), get_asset_detail(), _copy_or_generate_asset_source(), _incident_title(), _make_feed_media(), Demo seeder: plants a ready-to-demo dataset into SQLite.  Generates placeholde (+18 more)
 
-### Community 3 - "Incident Management"
+### Community 3 - "Community 3"
 Cohesion: 0.16
 Nodes (19): ActionCreate, ActionRecord, IncidentStatusUpdate, BaseModel, LiveEvent, FeedItemIngestRequest, FeedItemSummary, AssetBrief (+11 more)
 
-### Community 4 - "Feeds and Similarity Match"
+### Community 4 - "Community 4"
 Cohesion: 0.17
 Nodes (17): FeedItemListResponse, get_feed_item(), ingest_feed(), list_feeds(), _org_id(), Ingest an external feed item, run pHash match, optionally promote to incident., list_feed_items(), best_match() (+9 more)
 
-### Community 5 - "Dashboard and Events Bus"
+### Community 5 - "Community 5"
 Cohesion: 0.17
 Nodes (10): DashboardMetric, DashboardOverviewResponse, get_dashboard_overview(), _org_id(), build_dashboard_overview(), Legacy hardcoded demo data (pre-MVP).  This module is retained as a compatibil, In-process pub/sub for SSE.  Each connected client gets its own asyncio.Queue., Yield raw SSE ``data:`` frames for one client. (+2 more)
 
-### Community 6 - "Live Demo Simulation"
+### Community 6 - "Community 6"
 Cohesion: 0.29
 Nodes (9): _live_emitter(), LiveStartRequest, Demo control endpoints.  These are what the Settings → Demo Control panel talk, reset(), seed(), SeedRequest, SimulateRequest, start_live() (+1 more)
 
-### Community 7 - "Live Watch and Hooks"
+### Community 7 - "Community 7"
 Cohesion: 0.2
 Nodes (5): LiveWatchPage(), useSSE(), useDashboardOverview(), useFeeds(), useIncidents()
 
-### Community 8 - "Asset API Routes"
+### Community 8 - "Community 8"
 Cohesion: 0.33
 Nodes (7): AssetCreateRequest, AssetCreateResponse, AssetListResponse, AssetSummary, create_asset(), list_assets(), _org_id()
 
-### Community 9 - "API Initialization Module"
+### Community 9 - "Community 9"
 Cohesion: 0.25
 Nodes (1): Worker package placeholder.
 
-### Community 10 - "Web API Client"
+### Community 10 - "Community 10"
 Cohesion: 0.29
 Nodes (3): api(), ApiError, getToken()
 
-### Community 11 - "Gemini AI Triage"
+### Community 11 - "Community 11"
 Cohesion: 0.53
 Nodes (5): _build_prompt(), _canned(), generate_triage(), _parse_gemini(), Triage text generator.  Defaults to canned strings keyed by severity. If ``GEM
 
-### Community 12 - "API Setup Documentation"
+### Community 12 - "Community 12"
 Cohesion: 0.33
 Nodes (6): Demo Auth Backend, FastAPI Backend, Firebase Auth Backend, Local Runtime Profile, Public Runtime Profile, fastapi
 
-### Community 13 - "Frame AST Previews"
+### Community 13 - "Community 13"
 Cohesion: 0.5
 Nodes (4): AST-172 Frame 1, AST-172 Original Image, AST-188 Original Image, AST-172 Preview Image
 
-### Community 14 - "Event Streaming Routes"
+### Community 14 - "Community 14"
 Cohesion: 0.67
 Nodes (2): Server-Sent Events stream for the operator UI.      ``EventSource`` can't set, stream()
 
-### Community 15 - "Assets Web Page"
+### Community 15 - "Community 15"
 Cohesion: 0.67
 Nodes (0): 
 
-### Community 16 - "Asset React Hooks"
+### Community 16 - "Community 16"
 Cohesion: 0.67
 Nodes (0): 
 
-### Community 17 - "Evidence Web Page"
+### Community 17 - "Community 17"
 Cohesion: 0.67
 Nodes (0): 
 
-### Community 18 - "Incident Detail Page"
+### Community 18 - "Community 18"
 Cohesion: 0.67
 Nodes (0): 
 
-### Community 19 - "Incidents Web Page"
+### Community 19 - "Community 19"
 Cohesion: 0.67
 Nodes (0): 
 
-### Community 20 - "Incident Detail Hooks"
+### Community 20 - "Community 20"
 Cohesion: 0.67
 Nodes (0): 
 
-### Community 21 - "Dashboard Overview Page"
+### Community 21 - "Community 21"
 Cohesion: 0.67
 Nodes (0): 
 
-### Community 22 - "Research and Trust Docs"
+### Community 22 - "Community 22"
 Cohesion: 0.67
 Nodes (3): C2PA Provenance, KillCont Product, Dual Trust Model
 
-### Community 23 - "Feed Media Previews"
+### Community 23 - "Community 23"
 Cohesion: 0.67
 Nodes (3): FEED-1001 Media Image, FEED-1002 Media Image, FEED-1001 Preview Image
 
-### Community 24 - "API Health Check"
+### Community 24 - "Community 24"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 25 - "Web App Root Component"
+### Community 25 - "Community 25"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 26 - "Web App Shell Component"
+### Community 26 - "Community 26"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 27 - "App Background Layout"
+### Community 27 - "Community 27"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 28 - "Top Navigation Bar"
+### Community 28 - "Community 28"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 29 - "Asset Upload Modal"
+### Community 29 - "Community 29"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 30 - "Protected Auth Route"
+### Community 30 - "Community 30"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 31 - "Sign In Web Page"
+### Community 31 - "Community 31"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 32 - "Auth React Hook"
+### Community 32 - "Community 32"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 33 - "Demo Control Panel"
+### Community 33 - "Community 33"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 34 - "Monitor Web Page"
+### Community 34 - "Community 34"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 35 - "Settings Web Page"
+### Community 35 - "Community 35"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 36 - "Incident Architecture Docs"
+### Community 36 - "Community 36"
 Cohesion: 1.0
 Nodes (2): Incident Domain Model, Match Candidate Domain Model
 
-### Community 37 - "Scoring Architecture Docs"
+### Community 37 - "Community 37"
 Cohesion: 1.0
 Nodes (2): Coarse Semantic Retrieval, Fine Evidence Scoring
 
-### Community 38 - "PubSub Architecture Docs"
+### Community 38 - "Community 38"
 Cohesion: 1.0
 Nodes (2): Pub/Sub Event Layer, SSE Event Bus
 
-### Community 39 - "Design Threat Blueprints"
+### Community 39 - "Community 39"
 Cohesion: 1.0
 Nodes (2): Threat Map, Framer Design Inspiration
 
-### Community 40 - "Pillow Image Requirements"
+### Community 40 - "Community 40"
 Cohesion: 1.0
 Nodes (2): Pillow, PIL-based 64-bit hash
 
-### Community 41 - "API Router Configuration"
+### Community 41 - "Community 41"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 42 - "API Routes Initialization"
+### Community 42 - "Community 42"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 43 - "Vite TypeScript Declarations"
+### Community 43 - "Community 43"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 44 - "Vite JavaScript Config"
+### Community 44 - "Community 44"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 45 - "Vite TypeScript Config"
+### Community 45 - "Community 45"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 46 - "Web Entry Point"
+### Community 46 - "Community 46"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 47 - "Web Route Setup"
+### Community 47 - "Community 47"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 48 - "Marketing Landing Page"
+### Community 48 - "Community 48"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 49 - "Web Mock Data"
+### Community 49 - "Community 49"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 50 - "Web TypeScript Types"
+### Community 50 - "Community 50"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 51 - "Vertex AI Documentation"
+### Community 51 - "Community 51"
 Cohesion: 1.0
 Nodes (1): Vertex AI Multimodal Embeddings
 
-### Community 52 - "Gemini AI Documentation"
+### Community 52 - "Community 52"
 Cohesion: 1.0
 Nodes (1): Gemini on Vertex AI
 
-### Community 53 - "ImageHash Requirements"
+### Community 53 - "Community 53"
 Cohesion: 1.0
 Nodes (1): imagehash
 
-### Community 54 - "React Framework Documentation"
+### Community 54 - "Community 54"
 Cohesion: 1.0
 Nodes (1): React Frontend
 
-### Community 55 - "Vite Tooling Documentation"
+### Community 55 - "Community 55"
 Cohesion: 1.0
 Nodes (1): Vite
 
-### Community 56 - "Asset Architecture Docs"
+### Community 56 - "Community 56"
 Cohesion: 1.0
 Nodes (1): Asset Domain Model
 
-### Community 57 - "Feed Item Architecture"
+### Community 57 - "Community 57"
 Cohesion: 1.0
 Nodes (1): Feed Item Domain Model
 
-### Community 58 - "Gemini Triage Architecture"
+### Community 58 - "Community 58"
 Cohesion: 1.0
 Nodes (1): Gemini Incident Triage
 
-### Community 59 - "Mindset Concepts Docs"
+### Community 59 - "Community 59"
 Cohesion: 1.0
 Nodes (1): Operator-First Principle
 
-### Community 60 - "Local MVP Status"
+### Community 60 - "Community 60"
 Cohesion: 1.0
 Nodes (1): MVP Local Demo Flow
 
 ## Knowledge Gaps
 - **50 isolated node(s):** `Demo control endpoints.  These are what the Settings → Demo Control panel talk`, `Server-Sent Events stream for the operator UI.      ``EventSource`` can't set`, `SQLite data layer for KillCont MVP.  One sqlite file at ``var/app.db``. The mo`, `Context-managed sqlite connection with dict rows and foreign keys on.`, `Apply schema, idempotent. Called from FastAPI startup hook.` (+45 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **Thin community `API Health Check`** (2 nodes): `health.py`, `health_check()`
+- **Thin community `Community 24`** (2 nodes): `health.py`, `health_check()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Web App Root Component`** (2 nodes): `App()`, `App.tsx`
+- **Thin community `Community 25`** (2 nodes): `App()`, `App.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Web App Shell Component`** (2 nodes): `AppShell.tsx`, `AppShell()`
+- **Thin community `Community 26`** (2 nodes): `AppShell.tsx`, `AppShell()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `App Background Layout`** (2 nodes): `AppBackground()`, `AppBackground.tsx`
+- **Thin community `Community 27`** (2 nodes): `AppBackground()`, `AppBackground.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Top Navigation Bar`** (2 nodes): `TopNav.tsx`, `TopNav()`
+- **Thin community `Community 28`** (2 nodes): `TopNav.tsx`, `TopNav()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Asset Upload Modal`** (2 nodes): `AssetUploadModal.tsx`, `onSubmit()`
+- **Thin community `Community 29`** (2 nodes): `AssetUploadModal.tsx`, `onSubmit()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Protected Auth Route`** (2 nodes): `ProtectedRoute.tsx`, `ProtectedRoute()`
+- **Thin community `Community 30`** (2 nodes): `ProtectedRoute.tsx`, `ProtectedRoute()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Sign In Web Page`** (2 nodes): `SignInPage.tsx`, `onSubmit()`
+- **Thin community `Community 31`** (2 nodes): `SignInPage.tsx`, `onSubmit()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Auth React Hook`** (2 nodes): `useAuth.ts`, `useAuth()`
+- **Thin community `Community 32`** (2 nodes): `useAuth.ts`, `useAuth()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Demo Control Panel`** (2 nodes): `DemoControlPanel.tsx`, `DemoControlPanel()`
+- **Thin community `Community 33`** (2 nodes): `DemoControlPanel.tsx`, `DemoControlPanel()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Monitor Web Page`** (2 nodes): `MonitorPage.tsx`, `formatTime()`
+- **Thin community `Community 34`** (2 nodes): `MonitorPage.tsx`, `formatTime()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Settings Web Page`** (2 nodes): `SettingsPage.tsx`, `SettingsPage()`
+- **Thin community `Community 35`** (2 nodes): `SettingsPage.tsx`, `SettingsPage()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Incident Architecture Docs`** (2 nodes): `Incident Domain Model`, `Match Candidate Domain Model`
+- **Thin community `Community 36`** (2 nodes): `Incident Domain Model`, `Match Candidate Domain Model`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Scoring Architecture Docs`** (2 nodes): `Coarse Semantic Retrieval`, `Fine Evidence Scoring`
+- **Thin community `Community 37`** (2 nodes): `Coarse Semantic Retrieval`, `Fine Evidence Scoring`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `PubSub Architecture Docs`** (2 nodes): `Pub/Sub Event Layer`, `SSE Event Bus`
+- **Thin community `Community 38`** (2 nodes): `Pub/Sub Event Layer`, `SSE Event Bus`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Design Threat Blueprints`** (2 nodes): `Threat Map`, `Framer Design Inspiration`
+- **Thin community `Community 39`** (2 nodes): `Threat Map`, `Framer Design Inspiration`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Pillow Image Requirements`** (2 nodes): `Pillow`, `PIL-based 64-bit hash`
+- **Thin community `Community 40`** (2 nodes): `Pillow`, `PIL-based 64-bit hash`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `API Router Configuration`** (1 nodes): `router.py`
+- **Thin community `Community 41`** (1 nodes): `router.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `API Routes Initialization`** (1 nodes): `__init__.py`
+- **Thin community `Community 42`** (1 nodes): `__init__.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Vite TypeScript Declarations`** (1 nodes): `vite.config.d.ts`
+- **Thin community `Community 43`** (1 nodes): `vite.config.d.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Vite JavaScript Config`** (1 nodes): `vite.config.js`
+- **Thin community `Community 44`** (1 nodes): `vite.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Vite TypeScript Config`** (1 nodes): `vite.config.ts`
+- **Thin community `Community 45`** (1 nodes): `vite.config.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Web Entry Point`** (1 nodes): `main.tsx`
+- **Thin community `Community 46`** (1 nodes): `main.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Web Route Setup`** (1 nodes): `router.tsx`
+- **Thin community `Community 47`** (1 nodes): `router.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Marketing Landing Page`** (1 nodes): `LandingPage.tsx`
+- **Thin community `Community 48`** (1 nodes): `LandingPage.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Web Mock Data`** (1 nodes): `mock-data.ts`
+- **Thin community `Community 49`** (1 nodes): `mock-data.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Web TypeScript Types`** (1 nodes): `types.ts`
+- **Thin community `Community 50`** (1 nodes): `types.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Vertex AI Documentation`** (1 nodes): `Vertex AI Multimodal Embeddings`
+- **Thin community `Community 51`** (1 nodes): `Vertex AI Multimodal Embeddings`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Gemini AI Documentation`** (1 nodes): `Gemini on Vertex AI`
+- **Thin community `Community 52`** (1 nodes): `Gemini on Vertex AI`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `ImageHash Requirements`** (1 nodes): `imagehash`
+- **Thin community `Community 53`** (1 nodes): `imagehash`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `React Framework Documentation`** (1 nodes): `React Frontend`
+- **Thin community `Community 54`** (1 nodes): `React Frontend`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Vite Tooling Documentation`** (1 nodes): `Vite`
+- **Thin community `Community 55`** (1 nodes): `Vite`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Asset Architecture Docs`** (1 nodes): `Asset Domain Model`
+- **Thin community `Community 56`** (1 nodes): `Asset Domain Model`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Feed Item Architecture`** (1 nodes): `Feed Item Domain Model`
+- **Thin community `Community 57`** (1 nodes): `Feed Item Domain Model`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Gemini Triage Architecture`** (1 nodes): `Gemini Incident Triage`
+- **Thin community `Community 58`** (1 nodes): `Gemini Incident Triage`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Mindset Concepts Docs`** (1 nodes): `Operator-First Principle`
+- **Thin community `Community 59`** (1 nodes): `Operator-First Principle`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Local MVP Status`** (1 nodes): `MVP Local Demo Flow`
+- **Thin community `Community 60`** (1 nodes): `MVP Local Demo Flow`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `get_settings()` connect `Authentication and Configuration` to `Database and Repositories`, `Media Storage and Seeding`, `Incident Management`, `Feeds and Similarity Match`, `Dashboard and Events Bus`, `Asset API Routes`, `Gemini AI Triage`?**
+- **Why does `get_settings()` connect `Community 1` to `Community 0`, `Community 2`, `Community 3`, `Community 4`, `Community 5`, `Community 8`, `Community 11`?**
   _High betweenness centrality (0.093) - this node is a cross-community bridge._
-- **Why does `get_conn()` connect `Database and Repositories` to `Authentication and Configuration`, `Media Storage and Seeding`, `Feeds and Similarity Match`, `Dashboard and Events Bus`, `Asset API Routes`?**
+- **Why does `get_conn()` connect `Community 0` to `Community 1`, `Community 2`, `Community 4`, `Community 5`, `Community 8`?**
   _High betweenness centrality (0.079) - this node is a cross-community bridge._
-- **Why does `simulate_incident()` connect `Database and Repositories` to `Authentication and Configuration`, `Media Storage and Seeding`, `Feeds and Similarity Match`, `Live Demo Simulation`, `Gemini AI Triage`?**
+- **Why does `simulate_incident()` connect `Community 0` to `Community 1`, `Community 2`, `Community 4`, `Community 6`, `Community 11`?**
   _High betweenness centrality (0.059) - this node is a cross-community bridge._
 - **Are the 21 inferred relationships involving `simulate_incident()` (e.g. with `get_settings()` and `get_asset_detail()`) actually correct?**
   _`simulate_incident()` has 21 INFERRED edges - model-reasoned connections that need verification._
