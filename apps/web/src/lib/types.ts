@@ -1,0 +1,143 @@
+/** Shared shape of API responses. Matches `apps/api/app/schemas/*` 1-to-1. */
+
+export type SessionUser = {
+  user_id: string;
+  email: string;
+  display_name: string;
+  organization_id: string;
+  role: string;
+};
+
+export type LoginResponse = {
+  token: string;
+  user: SessionUser;
+};
+
+export type DashboardMetric = {
+  label: string;
+  value: string;
+  delta: string;
+};
+
+export type IncidentSummary = {
+  incident_id: string;
+  title: string;
+  severity: string;
+  platform: string;
+  matched_asset: string;
+  confidence: string;
+  spread: string;
+  region: string;
+  summary: string;
+  operator_status?: string;
+  asset_id?: string;
+  feed_item_id?: string;
+  created_at?: string;
+};
+
+export type DashboardOverview = {
+  metrics: DashboardMetric[];
+  live_sync_status: string;
+  active_event: string;
+  recent_incidents: IncidentSummary[];
+  active_event_detail?: string;
+};
+
+export type AssetSummary = {
+  asset_id: string;
+  title: string;
+  asset_type: string;
+  event_name: string;
+  status: string;
+  provenance_status: string;
+  incident_count: number;
+};
+
+export type AssetDetail = {
+  id: string;
+  title: string;
+  asset_type: string;
+  event_name?: string;
+  sport?: string;
+  rights_owner?: string;
+  description?: string;
+  status: string;
+  provenance_status: string;
+  primary_path?: string;
+  preview_path?: string;
+  phash?: string;
+  created_at: string;
+  incident_count: number;
+};
+
+export type FeedItem = {
+  id: string;
+  source_type: string;
+  source_platform?: string;
+  source_url?: string;
+  source_author?: string;
+  source_region?: string;
+  caption?: string;
+  content_type: string;
+  media_path?: string;
+  preview_path?: string;
+  phash?: string;
+  ingest_time: string;
+};
+
+export type MatchCandidate = {
+  id: string;
+  feed_item_id: string;
+  asset_id: string;
+  similarity_score: number;
+  hamming_distance: number;
+  confidence_band: string;
+  provenance_gap: number;
+  created_at: string;
+};
+
+export type ActionRecord = {
+  id: string;
+  incident_id: string;
+  by_user_id: string;
+  type: string;
+  notes?: string;
+  created_at: string;
+};
+
+export type IncidentDetail = {
+  id: string;
+  title: string;
+  severity: string;
+  triage_label: string;
+  trust_score: number;
+  spread_score: number;
+  operator_status: string;
+  reason_short?: string;
+  reason_detailed?: string;
+  operator_copy?: string;
+  map_region?: string;
+  created_at: string;
+  updated_at: string;
+  asset: {
+    id: string;
+    title: string;
+    asset_type: string;
+    event_name?: string;
+    provenance_status: string;
+    primary_path?: string;
+    preview_path?: string;
+  };
+  feed_item: FeedItem;
+  candidates: MatchCandidate[];
+  actions: ActionRecord[];
+};
+
+export type LiveSegmentEvent = {
+  index: number;
+  total: number;
+  minute: string;
+  source: string;
+  status: string;
+  latency_seconds: number;
+};

@@ -1,0 +1,44 @@
+# Node
+node_modules/
+dist/
+.vite/
+
+# Python
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Firebase / Google Cloud
+service-account.json
+firebase-debug.log
+
+# OS
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+
+# Coverage
+coverage/
+htmlcov/
+
+# IDE
+.idea/
+.vscode/
+
+# Build artifacts
+build/
+tmp/
+temp/
+*.tsbuildinfo
+apps/web/vite.config.js
+apps/web/vite.config.d.ts
