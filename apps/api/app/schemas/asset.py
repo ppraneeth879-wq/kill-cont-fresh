@@ -11,6 +11,7 @@ class AssetSummary(BaseModel):
     status: str
     provenance_status: str
     incident_count: int
+    preview_path: Optional[str] = None
 
 
 class AssetListResponse(BaseModel):

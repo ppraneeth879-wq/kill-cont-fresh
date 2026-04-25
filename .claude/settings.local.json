@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(gcloud --version)",
+      "Bash(firebase --version)",
+      "Bash(python -c \"import fastapi, uvicorn, PIL, imagehash, firebase_admin; print\\('all backend deps OK'\\)\")",
+      "Bash(python -c \"import fastapi, uvicorn, PIL, imagehash; print\\('core OK'\\)\")",
+      "Bash(python -m pip list)",
+      "Bash(python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --log-level info)",
+      "Bash(npm run *)",
+      "Bash(curl -s http://127.0.0.1:8000/)",
+      "Bash(curl -s http://127.0.0.1:8000/api/v1/health)",
+      "Bash(curl -s -X POST http://127.0.0.1:8000/api/v1/session/login -H \"Content-Type: application/json\" -d '{\"email\":\"demo@killcont.local\",\"display_name\":\"Demo Operator\"}')",
+      "Bash(python *)",
+      "Bash(taskkill //F //FI \"WINDOWTITLE eq python*\")",
+      "Bash(curl -s http://127.0.0.1:8000/api/v1/assets -H \"Authorization: Bearer killcont-demo-demo-user-1\")",
+      "Bash(curl -s http://127.0.0.1:8000/api/v1/incidents -H \"Authorization: Bearer killcont-demo-demo-user-1\")",
+      "Bash(curl -s -i http://127.0.0.1:8000/api/v1/incidents/INC-1040/notice -H \"Authorization: Bearer killcont-demo-demo-user-1\")",
+      "Bash(npx tsc *)",
+      "Bash(npx vite *)",
+      "Bash(curl -s -X POST http://127.0.0.1:8000/api/v1/demo/simulate-incident -H \"Authorization: Bearer killcont-demo-demo-user-1\" -H \"Content-Type: application/json\" -d \"{}\")",
+      "Bash(curl -s http://127.0.0.1:8000/api/v1/dashboard/overview -H \"Authorization: Bearer killcont-demo-demo-user-1\")",
+      "Bash(curl -s http://127.0.0.1:5173 -o /dev/null -w \"Vite: %{http_code}\\\\n\")",
+      "Bash(curl -s -X POST http://127.0.0.1:8000/api/v1/demo/seed -H \"Authorization: Bearer killcont-demo-demo-user-1\" -H \"Content-Type: application/json\")"
+    ]
+  }
+}

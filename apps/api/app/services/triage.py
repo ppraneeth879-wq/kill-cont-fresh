@@ -9,11 +9,37 @@ never blocks on a network call.
 from __future__ import annotations
 
 import json
-from typing import Any
+import time
+from typing import Any, Literal
 
 import httpx
 
 from app.core.config import get_settings
+
+
+GeminiStatus = Literal[
+    "unconfigured",
+    "ok",
+    "fallback",
+    "rate_limited",
+    "network_error",
+    "parse_error",
+]
+
+# Module-level status exposed via /health/profile and /debug/test-gemini.
+LAST_GEMINI_STATUS: GeminiStatus = "unconfigured"
+LAST_GEMINI_LATENCY_MS: float | None = None
+LAST_GEMINI_SOURCE: Literal["gemini", "fallback"] = "fallback"
+
+
+def current_gemini_snapshot() -> dict[str, Any]:
+    return {
+        "status": LAST_GEMINI_STATUS,
+        "last_source": LAST_GEMINI_SOURCE,
+        "last_latency_ms": LAST_GEMINI_LATENCY_MS,
+        "configured": bool(get_settings().gemini_api_key),
+        "model": "gemini-1.5-flash",
+    }
 
 
 CANNED_BY_SEVERITY: dict[str, tuple[str, str, str]] = {
@@ -76,25 +102,43 @@ async def generate_triage(
     score: float,
     severity: str,
 ) -> dict[str, str]:
+    global LAST_GEMINI_STATUS, LAST_GEMINI_LATENCY_MS, LAST_GEMINI_SOURCE
+
     settings = get_settings()
     key = settings.gemini_api_key
-    if key:
-        try:
-            async with httpx.AsyncClient(timeout=4.0) as client:
-                resp = await client.post(
-                    f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={key}",
-                    json={
-                        "contents": [
-                            {"parts": [{"text": _build_prompt(asset, feed_item, score, severity)}]}
-                        ],
-                        "generationConfig": {"responseMimeType": "application/json"},
-                    },
-                )
-                if resp.status_code == 200:
-                    parsed = _parse_gemini(resp.json())
-                    if parsed and parsed["reason_short"]:
-                        return parsed
-        except Exception:
-            # Fall through to canned — demo must not be blocked by a network call.
-            pass
+    if not key:
+        LAST_GEMINI_STATUS = "unconfigured"
+        LAST_GEMINI_SOURCE = "fallback"
+        LAST_GEMINI_LATENCY_MS = None
+        return _canned(severity)
+
+    t0 = time.perf_counter()
+    try:
+        async with httpx.AsyncClient(timeout=6.0) as client:
+            resp = await client.post(
+                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={key}",
+                json={
+                    "contents": [
+                        {"parts": [{"text": _build_prompt(asset, feed_item, score, severity)}]}
+                    ],
+                    "generationConfig": {"responseMimeType": "application/json"},
+                },
+            )
+            LAST_GEMINI_LATENCY_MS = round((time.perf_counter() - t0) * 1000, 1)
+            if resp.status_code == 200:
+                parsed = _parse_gemini(resp.json())
+                if parsed and parsed["reason_short"]:
+                    LAST_GEMINI_STATUS = "ok"
+                    LAST_GEMINI_SOURCE = "gemini"
+                    return parsed
+                LAST_GEMINI_STATUS = "parse_error"
+            elif resp.status_code == 429:
+                LAST_GEMINI_STATUS = "rate_limited"
+            else:
+                LAST_GEMINI_STATUS = "network_error"
+    except Exception:
+        LAST_GEMINI_LATENCY_MS = round((time.perf_counter() - t0) * 1000, 1)
+        LAST_GEMINI_STATUS = "network_error"
+
+    LAST_GEMINI_SOURCE = "fallback"
     return _canned(severity)

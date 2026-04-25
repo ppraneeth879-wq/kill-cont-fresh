@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { useIncidents } from "../incidents/useIncidents";
 import { useDashboardOverview } from "./useDashboardOverview";
+import { ThreatMap } from "../shared/ThreatMap";
 
 function severityClass(severity: string | undefined): string {
   const normalized = (severity ?? "monitor").toLowerCase();
@@ -15,11 +17,16 @@ function toLabel(value: string | undefined): string {
 }
 
 export function OverviewPage() {
+  const navigate = useNavigate();
   const overviewQuery = useDashboardOverview();
   const incidentsQuery = useIncidents({ live: true });
 
   const metrics = overviewQuery.data?.metrics ?? [];
   const liveIncidents = incidentsQuery.data?.items ?? overviewQuery.data?.recent_incidents ?? [];
+  const freshIds = incidentsQuery.freshIds;
+  const geoCount = liveIncidents.filter(
+    (i) => typeof i.map_lat === "number" && typeof i.map_lng === "number",
+  ).length;
   const actionQueue =
     liveIncidents.slice(0, 3).map((incident) => `Review ${incident.title.toLowerCase()}`) ?? [];
 
@@ -63,17 +70,15 @@ export function OverviewPage() {
               <h2 className="panel__title">Propagation hotspots</h2>
             </div>
             <span className="status-pill status-pill--monitor">
-              {Math.max(1, Math.min(3, liveIncidents.length || 1))} active chains
+              {geoCount} geolocated incidents
             </span>
           </div>
-          <div className="map-stage">
-            <span className="map-stage__cluster map-stage__cluster--one" />
-            <span className="map-stage__cluster map-stage__cluster--two" />
-            <span className="map-stage__cluster map-stage__cluster--three" />
-            <span className="map-stage__arc map-stage__arc--one" />
-            <span className="map-stage__arc map-stage__arc--two" />
-            <span className="map-stage__arc map-stage__arc--three" />
-          </div>
+          <ThreatMap
+            incidents={liveIncidents}
+            freshIds={freshIds}
+            height={360}
+            onSelect={(id) => navigate(`/app/incidents/${id}`)}
+          />
         </article>
 
         <article className="panel">

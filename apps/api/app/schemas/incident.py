@@ -29,6 +29,8 @@ class IncidentSummary(BaseModel):
     asset_id: Optional[str] = None
     feed_item_id: Optional[str] = None
     created_at: Optional[str] = None
+    map_lat: Optional[float] = None
+    map_lng: Optional[float] = None
 
 
 class IncidentListResponse(BaseModel):
@@ -57,6 +59,8 @@ class IncidentDetail(BaseModel):
     reason_detailed: Optional[str] = None
     operator_copy: Optional[str] = None
     map_region: Optional[str] = None
+    map_lat: Optional[float] = None
+    map_lng: Optional[float] = None
     created_at: str
     updated_at: str
 

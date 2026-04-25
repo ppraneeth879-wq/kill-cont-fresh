@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { NavLink, useParams } from "react-router-dom";
 import { mediaUrl } from "../../lib/api";
+import { MediaFrame } from "../../components/ui/MediaFrame";
 import { useIncidentAction, useIncidentDetail } from "./useIncidentDetail";
 
 function toLabel(value: string | undefined): string {
@@ -108,28 +109,18 @@ export function IncidentDetailPage() {
           </div>
 
           <div className="comparison-grid">
-            <div className="media-frame media-frame--official" style={officialPreview ? { padding: 0, overflow: "hidden" } : undefined}>
-              {officialPreview ? (
-                <img
-                  alt="Official protected asset"
-                  src={officialPreview}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              ) : (
-                <span>Official protected asset</span>
-              )}
-            </div>
-            <div className="media-frame media-frame--detected" style={detectedPreview ? { padding: 0, overflow: "hidden" } : undefined}>
-              {detectedPreview ? (
-                <img
-                  alt="Detected suspicious upload"
-                  src={detectedPreview}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              ) : (
-                <span>Detected suspicious upload</span>
-              )}
-            </div>
+            <MediaFrame
+              src={officialPreview}
+              alt="Official protected asset"
+              variant="official"
+              caption="Official asset"
+            />
+            <MediaFrame
+              src={detectedPreview}
+              alt="Detected suspicious upload"
+              variant="detected"
+              caption="Detected upload"
+            />
           </div>
 
           <div className="detail-grid">

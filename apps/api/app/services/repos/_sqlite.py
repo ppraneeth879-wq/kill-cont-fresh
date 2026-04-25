@@ -1,83 +1,18 @@
-"""Thin query helpers shared across route handlers.
+"""SQLite metadata adapter — the local-profile implementation.
 
-Not a full ORM — just the couple of joined reads that would otherwise be
-duplicated in 3+ places (incident summary row + dashboard overview + asset
-detail). Everything returns plain dicts from the ``dict_factory`` on the
-connection.
+Verbatim port of the original ``app/services/repos.py`` query helpers.
+Route handlers reach these through the package-level dispatcher in
+``app/services/repos/__init__.py`` so the call surface stays
+``repos.list_incidents(...)``.
 """
 
 from __future__ import annotations
 
-import secrets
-import string
 from typing import Optional
 
 from app.services.db import get_conn
 
-
-# ---------- ID helpers ----------
-
-def _rand_suffix(n: int = 4) -> str:
-    alphabet = string.digits
-    return "".join(secrets.choice(alphabet) for _ in range(n))
-
-
-def new_asset_id() -> str:
-    return f"AST-{_rand_suffix(4)}"
-
-
-def new_feed_id() -> str:
-    return f"FEED-{_rand_suffix(5)}"
-
-
-def new_incident_id() -> str:
-    return f"INC-{_rand_suffix(5)}"
-
-
-def new_candidate_id() -> str:
-    return f"CAND-{_rand_suffix(6)}"
-
-
-def new_action_id() -> str:
-    return f"ACT-{_rand_suffix(6)}"
-
-
-# ---------- Formatters ----------
-
-def _pct(score: float) -> str:
-    return f"{score * 100:.1f}%"
-
-
-def _spread_label(score: float) -> str:
-    if score >= 0.66:
-        return "high"
-    if score >= 0.33:
-        return "moderate"
-    return "low"
-
-
-def incident_to_summary(row: dict) -> dict:
-    """Shape a joined incident row into the FE-facing summary format.
-
-    Expected keys on ``row``: everything on ``incidents`` plus ``asset_title``,
-    ``source_platform``, ``source_region``, ``trust_score``.
-    """
-
-    return {
-        "incident_id": row["id"],
-        "title": row["title"],
-        "severity": row["severity"],
-        "platform": row.get("source_platform") or "unknown",
-        "matched_asset": row.get("asset_title") or "",
-        "confidence": _pct(row.get("trust_score") or 0.0),
-        "spread": _spread_label(row.get("spread_score") or 0.0),
-        "region": row.get("map_region") or row.get("source_region") or "",
-        "summary": row.get("reason_short") or "",
-        "operator_status": row.get("operator_status") or "new",
-        "asset_id": row.get("asset_id"),
-        "feed_item_id": row.get("feed_item_id"),
-        "created_at": row.get("created_at"),
-    }
+from ._common import new_action_id, incident_to_summary
 
 
 # ---------- Query helpers ----------
@@ -161,6 +96,8 @@ def get_incident_detail(incident_id: str) -> Optional[dict]:
         "reason_detailed": incident.get("reason_detailed"),
         "operator_copy": incident.get("operator_copy"),
         "map_region": incident.get("map_region"),
+        "map_lat": incident.get("map_lat"),
+        "map_lng": incident.get("map_lng"),
         "created_at": incident["created_at"],
         "updated_at": incident["updated_at"],
         "asset": {
@@ -197,6 +134,7 @@ def list_assets(org_id: str) -> list[dict]:
             "status": r["status"],
             "provenance_status": r["provenance_status"],
             "incident_count": r["incident_count"],
+            "preview_path": r.get("preview_path"),
         }
         for r in rows
     ]
@@ -317,3 +255,130 @@ def get_all_assets_with_phash(org_id: str) -> list[dict]:
             "  FROM assets WHERE org_id = ? AND phash IS NOT NULL",
             (org_id,),
         ).fetchall()
+
+
+# ---------- Write surface for seeder + simulate-incident ----------
+
+def insert_asset(payload: dict) -> None:
+    """Insert a fully-formed asset row. Caller fills every column.
+
+    Expected keys: id, org_id, title, asset_type, event_name, sport,
+    rights_owner, description, status, provenance_status, primary_path,
+    preview_path, phash.
+    """
+
+    with get_conn() as conn:
+        conn.execute(
+            "INSERT INTO assets (id, org_id, title, asset_type, event_name, sport, "
+            "   rights_owner, description, status, provenance_status, primary_path, "
+            "   preview_path, phash) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                payload["id"],
+                payload["org_id"],
+                payload["title"],
+                payload["asset_type"],
+                payload.get("event_name"),
+                payload.get("sport"),
+                payload.get("rights_owner"),
+                payload.get("description"),
+                payload.get("status") or "watching",
+                payload.get("provenance_status") or "unknown",
+                payload.get("primary_path"),
+                payload.get("preview_path"),
+                payload.get("phash"),
+            ),
+        )
+
+
+def insert_feed_item(payload: dict) -> None:
+    """Insert a feed-item row.
+
+    Expected keys: id, org_id, source_type, source_platform, source_url,
+    source_author, source_region, caption, content_type, media_path,
+    preview_path, phash.
+    """
+
+    with get_conn() as conn:
+        conn.execute(
+            "INSERT INTO feed_items (id, org_id, source_type, source_platform, source_url, "
+            "   source_author, source_region, caption, content_type, media_path, "
+            "   preview_path, phash) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                payload["id"],
+                payload["org_id"],
+                payload.get("source_type") or "simulated",
+                payload.get("source_platform"),
+                payload.get("source_url"),
+                payload.get("source_author"),
+                payload.get("source_region"),
+                payload.get("caption"),
+                payload.get("content_type") or "image",
+                payload.get("media_path"),
+                payload.get("preview_path"),
+                payload.get("phash"),
+            ),
+        )
+
+
+def insert_match_candidate(payload: dict) -> None:
+    """Insert a match-candidate row.
+
+    Expected keys: id, feed_item_id, asset_id, similarity_score,
+    hamming_distance, confidence_band, provenance_gap.
+    """
+
+    with get_conn() as conn:
+        conn.execute(
+            "INSERT INTO match_candidates (id, feed_item_id, asset_id, similarity_score, "
+            "   hamming_distance, confidence_band, provenance_gap) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (
+                payload["id"],
+                payload["feed_item_id"],
+                payload["asset_id"],
+                payload["similarity_score"],
+                payload["hamming_distance"],
+                payload["confidence_band"],
+                int(payload.get("provenance_gap") or 0),
+            ),
+        )
+
+
+def insert_incident(payload: dict) -> None:
+    """Insert a fully-formed incident row.
+
+    Expected keys: id, org_id, asset_id, feed_item_id, title, severity,
+    triage_label, trust_score, spread_score, operator_status (default new),
+    reason_short, reason_detailed, operator_copy, map_region, map_lat,
+    map_lng. Denormalized fields (asset_title, source_platform,
+    source_region) are stored in the SQLite schema only via the JOIN at
+    read time — they are accepted in payload but ignored here.
+    """
+
+    with get_conn() as conn:
+        conn.execute(
+            "INSERT INTO incidents (id, org_id, asset_id, feed_item_id, title, severity, "
+            "   triage_label, trust_score, spread_score, operator_status, reason_short, "
+            "   reason_detailed, operator_copy, map_region, map_lat, map_lng) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                payload["id"],
+                payload["org_id"],
+                payload["asset_id"],
+                payload["feed_item_id"],
+                payload["title"],
+                payload["severity"],
+                payload.get("triage_label") or payload["severity"],
+                float(payload.get("trust_score") or 0.0),
+                float(payload.get("spread_score") or 0.0),
+                payload.get("operator_status") or "new",
+                payload.get("reason_short"),
+                payload.get("reason_detailed"),
+                payload.get("operator_copy"),
+                payload.get("map_region"),
+                payload.get("map_lat"),
+                payload.get("map_lng"),
+            ),
+        )

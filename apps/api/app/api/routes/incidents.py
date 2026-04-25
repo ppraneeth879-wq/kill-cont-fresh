@@ -1,6 +1,8 @@
+from datetime import datetime, timezone
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi.responses import PlainTextResponse
 
 from app.core.config import get_settings
 from app.schemas.action import ActionCreate, ActionRecord, IncidentStatusUpdate
@@ -88,3 +90,89 @@ async def record_action(
     )
 
     return ActionRecord(**action)
+
+
+@router.get("/{incident_id}/notice", response_class=PlainTextResponse)
+def download_notice(incident_id: str) -> PlainTextResponse:
+    """Generate a Markdown takedown notice for an incident."""
+    detail = repos.get_incident_detail(incident_id)
+    if not detail:
+        raise HTTPException(status_code=404, detail="incident not found")
+
+    asset = detail.get("asset", {}) or {}
+    feed = detail.get("feed_item", {}) or {}
+    candidates = detail.get("candidates", []) or []
+    top = candidates[0] if candidates else {}
+
+    severity = (detail.get("severity") or "monitor").upper()
+    trust = detail.get("trust_score") or 0
+    spread = detail.get("spread_score") or 0
+    sim = top.get("similarity_score") or 0
+    ham = top.get("hamming_distance")
+    band = top.get("confidence_band") or "unknown"
+    provenance = (asset.get("provenance_status") or "unknown").replace("_", " ").title()
+    platform = feed.get("source_platform") or "unknown platform"
+    region = feed.get("source_region") or detail.get("map_region") or "unknown region"
+    author = feed.get("source_author") or "unknown author"
+    source_url = feed.get("source_url") or "(not captured)"
+    generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+
+    lines = [
+        f"# Takedown Notice — Incident {incident_id}",
+        "",
+        f"**Generated:** {generated_at}",
+        f"**Severity:** {severity}",
+        f"**Operator status:** {detail.get('operator_status', 'open')}",
+        "",
+        "## 1. Protected asset (rights holder)",
+        "",
+        f"- **Title:** {asset.get('title', '—')}",
+        f"- **Asset ID:** {asset.get('id', '—')}",
+        f"- **Type:** {asset.get('asset_type', '—')}",
+        f"- **Event:** {asset.get('event_name', '—')}",
+        f"- **Provenance:** {provenance}",
+        "",
+        "## 2. Infringing upload",
+        "",
+        f"- **Platform:** {platform}",
+        f"- **Author handle:** {author}",
+        f"- **Region:** {region}",
+        f"- **Source URL:** {source_url}",
+        f"- **Ingested:** {feed.get('ingest_time', '—')}",
+        f"- **Caption:** {feed.get('caption') or '(none captured)'}",
+        "",
+        "## 3. Match evidence",
+        "",
+        f"- **Perceptual-hash similarity:** {sim * 100:.1f}%",
+        f"- **Hamming distance (64-bit pHash):** {ham if ham is not None else '—'}",
+        f"- **Confidence band:** {band}",
+        f"- **Trust score:** {trust * 100:.0f}%",
+        f"- **Spread score:** {spread * 100:.0f}%",
+        "",
+        "## 4. Why this is a match",
+        "",
+        detail.get("reason_detailed") or detail.get("reason_short") or "(no reason recorded)",
+        "",
+        "## 5. Operator recommendation",
+        "",
+        detail.get("operator_copy") or "(no recommendation recorded)",
+        "",
+        "## 6. Requested action",
+        "",
+        "The rights holder requests immediate removal of the infringing upload above",
+        "under applicable platform policy and copyright law. This notice is generated",
+        "from automated perceptual-hash matching against a registered protected asset;",
+        "the full evidence pack — including candidate frames and match ledger — is",
+        "available on request.",
+        "",
+        f"— KillCont evidence system · incident {incident_id}",
+        "",
+    ]
+
+    body = "\n".join(lines)
+    filename = f"killcont-notice-{incident_id}.md"
+    return PlainTextResponse(
+        content=body,
+        media_type="text/markdown; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )

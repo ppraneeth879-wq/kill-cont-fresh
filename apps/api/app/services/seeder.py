@@ -206,27 +206,23 @@ def seed_championship_final(org_id: Optional[str] = None) -> dict:
         storage.make_frame_strip(primary, asset_folder / "frames")
         phash = compute_phash(primary)
 
-        with get_conn() as conn:
-            conn.execute(
-                "INSERT INTO assets (id, org_id, title, asset_type, event_name, sport, "
-                "   rights_owner, description, status, provenance_status, primary_path, "
-                "   preview_path, phash) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'watching', ?, ?, ?, ?)",
-                (
-                    asset_id,
-                    org,
-                    cfg["title"],
-                    cfg["asset_type"],
-                    cfg["event_name"],
-                    cfg["sport"],
-                    cfg["rights_owner"],
-                    cfg["description"],
-                    cfg["provenance_status"],
-                    storage.relpath(primary),
-                    storage.relpath(preview),
-                    phash,
-                ),
-            )
+        repos.insert_asset(
+            {
+                "id": asset_id,
+                "org_id": org,
+                "title": cfg["title"],
+                "asset_type": cfg["asset_type"],
+                "event_name": cfg["event_name"],
+                "sport": cfg["sport"],
+                "rights_owner": cfg["rights_owner"],
+                "description": cfg["description"],
+                "status": "watching",
+                "provenance_status": cfg["provenance_status"],
+                "primary_path": storage.relpath(primary),
+                "preview_path": storage.relpath(preview),
+                "phash": phash,
+            }
+        )
         asset_records.append(
             {
                 "id": asset_id,
@@ -248,24 +244,22 @@ def seed_championship_final(org_id: Optional[str] = None) -> dict:
         storage.make_preview(feed_path, feed_preview)
         feed_phash = compute_phash(feed_path)
 
-        with get_conn() as conn:
-            conn.execute(
-                "INSERT INTO feed_items (id, org_id, source_type, source_platform, source_url, "
-                "   source_author, source_region, caption, content_type, media_path, preview_path, phash) "
-                "VALUES (?, ?, 'simulated', ?, ?, ?, ?, ?, 'image', ?, ?, ?)",
-                (
-                    feed_id,
-                    org,
-                    feed_cfg["platform"],
-                    f"https://{feed_cfg['platform']}.example/{feed_id}",
-                    feed_cfg["author"],
-                    feed_cfg["region"],
-                    feed_cfg["caption"],
-                    storage.relpath(feed_path),
-                    storage.relpath(feed_preview),
-                    feed_phash,
-                ),
-            )
+        repos.insert_feed_item(
+            {
+                "id": feed_id,
+                "org_id": org,
+                "source_type": "simulated",
+                "source_platform": feed_cfg["platform"],
+                "source_url": f"https://{feed_cfg['platform']}.example/{feed_id}",
+                "source_author": feed_cfg["author"],
+                "source_region": feed_cfg["region"],
+                "caption": feed_cfg["caption"],
+                "content_type": "image",
+                "media_path": storage.relpath(feed_path),
+                "preview_path": storage.relpath(feed_preview),
+                "phash": feed_phash,
+            }
+        )
         feed_count += 1
 
         # Always record a match candidate for this feed item.
@@ -273,21 +267,17 @@ def seed_championship_final(org_id: Optional[str] = None) -> dict:
         score = similarity_score(asset["phash"], feed_phash)
         provenance_gap = 1 if asset["provenance_status"] in ("verified", "present") else 0
         cand_id = repos.new_candidate_id()
-        with get_conn() as conn:
-            conn.execute(
-                "INSERT INTO match_candidates (id, feed_item_id, asset_id, similarity_score, "
-                "   hamming_distance, confidence_band, provenance_gap) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?)",
-                (
-                    cand_id,
-                    feed_id,
-                    asset["id"],
-                    score,
-                    distance,
-                    confidence_band(score),
-                    provenance_gap,
-                ),
-            )
+        repos.insert_match_candidate(
+            {
+                "id": cand_id,
+                "feed_item_id": feed_id,
+                "asset_id": asset["id"],
+                "similarity_score": score,
+                "hamming_distance": distance,
+                "confidence_band": confidence_band(score),
+                "provenance_gap": provenance_gap,
+            }
+        )
 
         # Promote the first N feed items to incidents.
         if i < INCIDENT_COUNT:
@@ -295,28 +285,32 @@ def seed_championship_final(org_id: Optional[str] = None) -> dict:
             spread = _spread_score_from_severity(severity)
             reason_short, reason_detailed, operator_copy = CANNED_BY_SEVERITY[severity]
             incident_id = f"INC-{1040 + i}"
-            with get_conn() as conn:
-                conn.execute(
-                    "INSERT INTO incidents (id, org_id, asset_id, feed_item_id, title, severity, "
-                    "   triage_label, trust_score, spread_score, operator_status, reason_short, "
-                    "   reason_detailed, operator_copy, map_region) "
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'new', ?, ?, ?, ?)",
-                    (
-                        incident_id,
-                        org,
-                        asset["id"],
-                        feed_id,
-                        _incident_title(severity, asset["title"]),
-                        severity,
-                        severity,  # triage_label == severity for MVP
-                        score,
-                        spread,
-                        reason_short,
-                        reason_detailed,
-                        operator_copy,
-                        feed_cfg["region"],
-                    ),
-                )
+            from app.services.geo import coords_for_region
+            coords = coords_for_region(feed_cfg["region"])
+            lat, lng = coords if coords else (None, None)
+            repos.insert_incident(
+                {
+                    "id": incident_id,
+                    "org_id": org,
+                    "asset_id": asset["id"],
+                    "feed_item_id": feed_id,
+                    "title": _incident_title(severity, asset["title"]),
+                    "severity": severity,
+                    "triage_label": severity,  # triage_label == severity for MVP
+                    "trust_score": score,
+                    "spread_score": spread,
+                    "operator_status": "new",
+                    "reason_short": reason_short,
+                    "reason_detailed": reason_detailed,
+                    "operator_copy": operator_copy,
+                    "map_region": feed_cfg["region"],
+                    "map_lat": lat,
+                    "map_lng": lng,
+                    "asset_title": asset["title"],
+                    "source_platform": feed_cfg["platform"],
+                    "source_region": feed_cfg["region"],
+                }
+            )
             incident_count += 1
 
     return {

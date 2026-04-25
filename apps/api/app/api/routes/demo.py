@@ -14,7 +14,6 @@ from pydantic import BaseModel
 
 from app.core.config import get_settings
 from app.services import repos, storage
-from app.services.db import get_conn
 from app.services.events_bus import publish
 from app.services.seeder import seed_championship_final
 from app.services.similarity import (
@@ -43,6 +42,8 @@ class SimulateRequest(BaseModel):
 class LiveStartRequest(BaseModel):
     segments: int = 5
     interval_seconds: float = 2.0
+    asset_id: Optional[str] = None
+    platform: Optional[str] = None
 
 
 def _org_id() -> str:
@@ -129,37 +130,39 @@ async def simulate_incident(body: SimulateRequest):
     except Exception:
         feed_phash = asset["phash"]
 
-    with get_conn() as conn:
-        conn.execute(
-            "INSERT INTO feed_items (id, org_id, source_type, source_platform, source_url, "
-            "   source_author, source_region, caption, content_type, media_path, preview_path, phash) "
-            "VALUES (?, ?, 'simulated', ?, ?, ?, ?, ?, 'image', ?, ?, ?)",
-            (
-                feed_id,
-                _org_id(),
-                platform,
-                f"https://{platform}.example/{feed_id}",
-                f"@sim-{random.randint(100, 999)}",
-                region,
-                f"Simulated repost against {asset['id']}",
-                storage.relpath(media_target),
-                storage.relpath(preview_target),
-                feed_phash,
-            ),
-        )
+    repos.insert_feed_item(
+        {
+            "id": feed_id,
+            "org_id": _org_id(),
+            "source_type": "simulated",
+            "source_platform": platform,
+            "source_url": f"https://{platform}.example/{feed_id}",
+            "source_author": f"@sim-{random.randint(100, 999)}",
+            "source_region": region,
+            "caption": f"Simulated repost against {asset['id']}",
+            "content_type": "image",
+            "media_path": storage.relpath(media_target),
+            "preview_path": storage.relpath(preview_target),
+            "phash": feed_phash,
+        }
+    )
 
     # Score + candidate row.
     distance = hamming_distance(asset["phash"], feed_phash)
     score = similarity_score(asset["phash"], feed_phash)
     provenance_gap = 1 if asset["provenance_status"] in ("verified", "present") else 0
     cand_id = repos.new_candidate_id()
-    with get_conn() as conn:
-        conn.execute(
-            "INSERT INTO match_candidates (id, feed_item_id, asset_id, similarity_score, "
-            "   hamming_distance, confidence_band, provenance_gap) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?)",
-            (cand_id, feed_id, asset["id"], score, distance, confidence_band(score), provenance_gap),
-        )
+    repos.insert_match_candidate(
+        {
+            "id": cand_id,
+            "feed_item_id": feed_id,
+            "asset_id": asset["id"],
+            "similarity_score": score,
+            "hamming_distance": distance,
+            "confidence_band": confidence_band(score),
+            "provenance_gap": provenance_gap,
+        }
+    )
 
     # Force promotion so the demo moment never misses — the scoring still shows
     # on the detail page and judges see the severity badge.
@@ -171,28 +174,32 @@ async def simulate_incident(body: SimulateRequest):
     triage_text = await generate_triage(asset_full, repos.get_feed_item(feed_id) or {}, score, severity)
 
     incident_id = repos.new_incident_id()
-    with get_conn() as conn:
-        conn.execute(
-            "INSERT INTO incidents (id, org_id, asset_id, feed_item_id, title, severity, "
-            "   triage_label, trust_score, spread_score, operator_status, reason_short, "
-            "   reason_detailed, operator_copy, map_region) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'new', ?, ?, ?, ?)",
-            (
-                incident_id,
-                _org_id(),
-                asset["id"],
-                feed_id,
-                f"{platform.title()} repost detected for '{asset['title']}'",
-                severity,
-                severity,
-                score,
-                spread,
-                triage_text["reason_short"],
-                triage_text["reason_detailed"],
-                triage_text["operator_copy"],
-                region,
-            ),
-        )
+    from app.services.geo import coords_for_region
+    coords = coords_for_region(region)
+    lat, lng = coords if coords else (None, None)
+    repos.insert_incident(
+        {
+            "id": incident_id,
+            "org_id": _org_id(),
+            "asset_id": asset["id"],
+            "feed_item_id": feed_id,
+            "title": f"{platform.title()} repost detected for '{asset['title']}'",
+            "severity": severity,
+            "triage_label": severity,
+            "trust_score": score,
+            "spread_score": spread,
+            "operator_status": "new",
+            "reason_short": triage_text["reason_short"],
+            "reason_detailed": triage_text["reason_detailed"],
+            "operator_copy": triage_text["operator_copy"],
+            "map_region": region,
+            "map_lat": lat,
+            "map_lng": lng,
+            "asset_title": asset["title"],
+            "source_platform": platform,
+            "source_region": region,
+        }
+    )
 
     detail = repos.get_incident_detail(incident_id)
 
@@ -216,9 +223,14 @@ LIVE_SEGMENT_STATUSES = [
 ]
 
 
-async def _live_emitter(segments: int, interval: float) -> None:
+async def _live_emitter(
+    segments: int,
+    interval: float,
+    asset_id: Optional[str] = None,
+    platform: Optional[str] = None,
+) -> None:
     total = max(1, segments)
-    minute_base = 74
+    minute_base = random.randint(68, 88)
     for i in range(total):
         await asyncio.sleep(interval)
         status = LIVE_SEGMENT_STATUSES[i % len(LIVE_SEGMENT_STATUSES)]
@@ -231,6 +243,8 @@ async def _live_emitter(segments: int, interval: float) -> None:
                 "Short relay node",
                 "Mirror ingest",
                 "Dubai relay",
+                "Nairobi edge",
+                "Lisbon CDN",
             ]),
             "status": status,
             "latency_seconds": random.randint(28, 58),
@@ -238,9 +252,16 @@ async def _live_emitter(segments: int, interval: float) -> None:
         await publish("live.segment", payload)
 
         # Middle segment triggers a full incident to showcase the flow.
+        # Uses the selected asset (if any) + a randomized platform so the
+        # "Fresh from matcher" rail visibly refreshes every /live/start.
         if status == "Restream suspected":
             try:
-                await simulate_incident(SimulateRequest(platform="live-relay"))
+                await simulate_incident(
+                    SimulateRequest(
+                        asset_id=asset_id,
+                        platform=platform or random.choice(SIMULATED_PLATFORMS),
+                    )
+                )
             except Exception:
                 pass
 
@@ -249,6 +270,20 @@ async def _live_emitter(segments: int, interval: float) -> None:
 
 @router.post("/live/start")
 async def start_live(body: LiveStartRequest, background: BackgroundTasks):
-    background.add_task(_live_emitter, body.segments, body.interval_seconds)
-    await publish("live.started", {"segments": body.segments})
-    return {"ok": True, "segments": body.segments, "interval_seconds": body.interval_seconds}
+    background.add_task(
+        _live_emitter,
+        body.segments,
+        body.interval_seconds,
+        body.asset_id,
+        body.platform,
+    )
+    await publish(
+        "live.started",
+        {"segments": body.segments, "asset_id": body.asset_id},
+    )
+    return {
+        "ok": True,
+        "segments": body.segments,
+        "interval_seconds": body.interval_seconds,
+        "asset_id": body.asset_id,
+    }

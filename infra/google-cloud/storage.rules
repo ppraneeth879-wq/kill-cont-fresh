@@ -1,0 +1,24 @@
+rules_version = '2';
+
+// KillCont Cloud Storage rules.
+//
+// The bucket is written exclusively by the API (Cloud Run) using its default
+// service account (Storage Object Admin role). Direct browser writes are not
+// supported — all uploads round-trip through ``POST /api/v1/assets`` which
+// uses the Firebase Admin SDK (admin credentials bypass these rules).
+//
+// Reads from the browser hit ``GET /media/{path}`` on the API which 302s to
+// ``https://storage.googleapis.com/<bucket>/{path}``. To make those redirects
+// work without per-request signed URLs we rely on the bucket's IAM grant
+// ``allUsers: roles/storage.objectViewer`` (set during ``gcloud storage
+// buckets add-iam-policy-binding`` in the deploy script). These rules just
+// document the surface; bucket-IAM is the real read gate.
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Default-deny everything from client SDKs.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

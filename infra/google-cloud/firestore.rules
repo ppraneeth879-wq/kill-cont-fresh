@@ -1,0 +1,21 @@
+rules_version = '2';
+
+// KillCont Firestore security rules.
+//
+// The API talks to Firestore via the Firebase Admin SDK on Cloud Run, which
+// bypasses these rules entirely. Direct client reads/writes from the web app
+// are NOT used — the FE only calls the FastAPI surface, which authenticates
+// with Firebase ID tokens and then performs all Firestore work server-side.
+//
+// We therefore lock everything down by default. If client-direct reads ever
+// become useful (e.g. real-time listeners on incidents), add a narrowly
+// scoped allow-read rule that gates on `request.auth != null` plus an
+// org_id match.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

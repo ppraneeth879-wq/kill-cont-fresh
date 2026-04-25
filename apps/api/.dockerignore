@@ -1,0 +1,34 @@
+# Local artefacts that must not ship inside the Cloud Run image.
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.tox
+.venv
+venv
+
+# Local profile data — Cloud Run uses /tmp anyway.
+var/
+*.db
+*.db-journal
+*.sqlite
+
+# Secrets / dev-only configs.
+.env
+.env.*
+service-account.json
+firebase-debug.log
+
+# IDE / OS noise.
+.idea
+.vscode
+.DS_Store
+Thumbs.db
+
+# Build output that doesn't belong in the API image.
+dist/
+build/
+*.egg-info

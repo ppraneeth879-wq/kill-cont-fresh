@@ -5,8 +5,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from fastapi.responses import RedirectResponse
+
 from app.api.router import api_router
 from app.core.config import get_settings
+from app.services import storage
 from app.services.authn import AuthConfigurationError, AuthError, authenticate_request_token
 from app.services.db import init_db
 
@@ -82,6 +85,17 @@ def read_root() -> dict[str, str]:
 app.include_router(api_router, prefix="/api/v1")
 
 # Expose uploaded media so the FE can <img src="/media/...">.
+# Local profile: serve directly from disk.
+# Public profile: 302-redirect every /media/* to the GCS object URL so
+# the FE keeps using the same relative paths.
 media_dir = settings.media_dir_obj
 media_dir.mkdir(parents=True, exist_ok=True)
-app.mount("/media", StaticFiles(directory=str(media_dir)), name="media")
+
+if storage.is_cloud_backend():
+
+    @app.get("/media/{path:path}", tags=["media"])
+    def media_redirect(path: str):
+        return RedirectResponse(url=storage.public_url_for(path), status_code=302)
+
+else:
+    app.mount("/media", StaticFiles(directory=str(media_dir)), name="media")

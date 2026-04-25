@@ -33,6 +33,8 @@ export type IncidentSummary = {
   asset_id?: string;
   feed_item_id?: string;
   created_at?: string;
+  map_lat?: number | null;
+  map_lng?: number | null;
 };
 
 export type DashboardOverview = {
@@ -51,6 +53,7 @@ export type AssetSummary = {
   status: string;
   provenance_status: string;
   incident_count: number;
+  preview_path?: string;
 };
 
 export type AssetDetail = {
@@ -117,6 +120,8 @@ export type IncidentDetail = {
   reason_detailed?: string;
   operator_copy?: string;
   map_region?: string;
+  map_lat?: number | null;
+  map_lng?: number | null;
   created_at: string;
   updated_at: string;
   asset: {
@@ -140,4 +145,42 @@ export type LiveSegmentEvent = {
   source: string;
   status: string;
   latency_seconds: number;
+};
+
+export type GeminiSnapshot = {
+  status:
+    | "unconfigured"
+    | "ok"
+    | "fallback"
+    | "rate_limited"
+    | "network_error"
+    | "parse_error";
+  last_source: "gemini" | "fallback";
+  last_latency_ms: number | null;
+  configured: boolean;
+  model: string;
+};
+
+export type HealthProfile = {
+  runtime_profile: string;
+  metadata_backend: string;
+  media_backend: string;
+  auth_backend: string;
+  app_version: string;
+  sse_state: string;
+  gemini: GeminiSnapshot;
+  phash_threshold: number;
+  public_web_origin: string | null;
+  allowed_origins: string[];
+};
+
+export type TestGeminiResponse = {
+  source: "gemini" | "fallback";
+  status: GeminiSnapshot["status"];
+  latency_ms: number;
+  configured: boolean;
+  model: string;
+  reason_short: string;
+  reason_detailed: string;
+  operator_copy: string;
 };

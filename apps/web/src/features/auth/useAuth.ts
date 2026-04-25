@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { api, authMode, FIREBASE_ID_TOKEN_KEY, TOKEN_KEY, USER_KEY } from "../../lib/api";
+import { signOutGoogle } from "../../lib/firebase";
 import type { LoginResponse, SessionUser } from "../../lib/types";
 
 export function useAuth() {
@@ -61,6 +62,16 @@ export function useAuth() {
   const signOut = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
+    if (authMode() === "firebase") {
+      // Fire-and-forget: clear localStorage immediately, even if the popup
+      // rejects (e.g. third-party cookies blocked).
+      void signOutGoogle();
+      try {
+        localStorage.removeItem(FIREBASE_ID_TOKEN_KEY);
+      } catch {
+        /* ignore */
+      }
+    }
     setUser(null);
   }, []);
 

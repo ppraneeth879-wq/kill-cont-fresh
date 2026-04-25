@@ -4,9 +4,12 @@
  * localStorage on every request so a fresh login takes effect immediately.
  */
 
+// In dev the Vite proxy rewrites /api/* → http://127.0.0.1:8000/api/*
+// so we can use a relative URL — avoids cross-origin issues in any environment.
+// In production VITE_API_BASE_URL must be set to the full Cloud Run URL.
 const BASE: string =
   (import.meta.env.VITE_API_BASE_URL as string | undefined) ??
-  "http://localhost:8000/api/v1";
+  "/api/v1";
 
 const AUTH_MODE: string =
   (import.meta.env.VITE_AUTH_MODE as string | undefined)?.toLowerCase() ?? "demo";
@@ -25,7 +28,11 @@ export function getToken(): string {
 
 export function mediaUrl(relPath: string | null | undefined): string | undefined {
   if (!relPath) return undefined;
-  const origin = BASE.replace(/\/api\/v1\/?$/, "");
+  // If BASE is an absolute URL (production), derive origin from it.
+  // If BASE is relative (dev via Vite proxy), use the current window origin.
+  const origin = BASE.startsWith("http")
+    ? BASE.replace(/\/api\/v1\/?$/, "")
+    : typeof window !== "undefined" ? window.location.origin : "";
   return `${origin}/media/${relPath}`;
 }
 
