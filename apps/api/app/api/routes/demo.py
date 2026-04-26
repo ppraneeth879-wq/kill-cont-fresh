@@ -172,6 +172,12 @@ async def simulate_incident(body: SimulateRequest):
         severity = severity or "monitor"
 
     triage_text = await generate_triage(asset_full, repos.get_feed_item(feed_id) or {}, score, severity)
+    # Capture immediately — these are module-level globals on triage.py and
+    # mutate on every generate_triage() call.
+    from app.services.triage import LAST_GEMINI_LATENCY_MS, LAST_GEMINI_SOURCE
+    triage_source = LAST_GEMINI_SOURCE
+    triage_model = settings.gemini_model if triage_source == "gemini" else None
+    triage_latency = LAST_GEMINI_LATENCY_MS if triage_source == "gemini" else None
 
     incident_id = repos.new_incident_id()
     from app.services.geo import coords_for_region
@@ -198,6 +204,9 @@ async def simulate_incident(body: SimulateRequest):
             "asset_title": asset["title"],
             "source_platform": platform,
             "source_region": region,
+            "triage_source": triage_source,
+            "triage_model": triage_model,
+            "triage_latency_ms": triage_latency,
         }
     )
 
