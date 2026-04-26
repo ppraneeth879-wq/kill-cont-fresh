@@ -232,6 +232,13 @@ LIVE_SEGMENT_STATUSES = [
 ]
 
 
+# Bundle C1: any segment whose status sits in this set produces a real
+# incident. Both "Restream suspected" (i % 5 == 3) and "Signal match"
+# (i % 5 == 1) qualify, so an 8-segment run promotes ~3 incidents instead
+# of the previous 1 — the Fresh-from-matcher rail visibly cycles.
+PROMOTING_STATUSES = {"Restream suspected", "Signal match"}
+
+
 async def _live_emitter(
     segments: int,
     interval: float,
@@ -240,6 +247,7 @@ async def _live_emitter(
 ) -> None:
     total = max(1, segments)
     minute_base = random.randint(68, 88)
+    promotion_idx = 0
     for i in range(total):
         await asyncio.sleep(interval)
         status = LIVE_SEGMENT_STATUSES[i % len(LIVE_SEGMENT_STATUSES)]
@@ -260,15 +268,22 @@ async def _live_emitter(
         }
         await publish("live.segment", payload)
 
-        # Middle segment triggers a full incident to showcase the flow.
-        # Uses the selected asset (if any) + a randomized platform so the
-        # "Fresh from matcher" rail visibly refreshes every /live/start.
-        if status == "Restream suspected":
+        # Bundle C1: rotate the platform per promoted incident so consecutive
+        # rail rows look distinct (piracy-mirror -> youtube -> reddit -> ...).
+        # If the operator pinned a specific platform on /live/start we honor
+        # that and skip the rotation.
+        if status in PROMOTING_STATUSES:
+            chosen_platform = (
+                platform
+                if platform
+                else SIMULATED_PLATFORMS[promotion_idx % len(SIMULATED_PLATFORMS)]
+            )
+            promotion_idx += 1
             try:
                 await simulate_incident(
                     SimulateRequest(
                         asset_id=asset_id,
-                        platform=platform or random.choice(SIMULATED_PLATFORMS),
+                        platform=chosen_platform,
                     )
                 )
             except Exception:

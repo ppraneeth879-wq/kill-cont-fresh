@@ -82,9 +82,9 @@ export function LiveWatchPage() {
         transition={{ duration: 0.45, ease: "easeOut" }}
       >
         <ContextHeader
-          eyebrow="Live watch"
+          eyebrow="Live watch · simulated stream"
           title="Near-real-time segment monitoring"
-          subtitle="Every ~2 s the backend fingerprints a segment and fires an incident if a protected asset is matched. Pick an asset to scope the next live run, or leave it on auto-pick for a random one."
+          subtitle="Demo stream: a deterministic 8-segment loop is emitted over SSE; ~2–3 segments per run flip to 'Signal match' or 'Restream suspected' and promote a real incident with rotating platform/region so the matcher rail visibly cycles. Pick an asset to scope the next run, or leave it on auto-pick."
           actions={
             <>
               <label className="live-watch__selector">
@@ -196,18 +196,52 @@ export function LiveWatchPage() {
             </div>
           </div>
           <div className="stack-list">
-            {latestIncidents.map((incident) => (
-              <article className="stack-list__item" key={incident.incident_id}>
-                <div className="stack-list__meta">
-                  <span className={`status-pill ${severityClass(incident.severity)}`}>
-                    {incident.severity}
-                  </span>
-                  <span>{incident.platform}</span>
-                </div>
-                <strong>{incident.title}</strong>
-                <p>{incident.region}</p>
-              </article>
-            ))}
+            {latestIncidents.map((incident) => {
+              const isFresh = freshIds.has(incident.incident_id);
+              return (
+                <article
+                  className={`stack-list__item${isFresh ? " stack-list__item--flash" : ""}`}
+                  key={incident.incident_id}
+                  onClick={() => navigate(`/app/incidents/${incident.incident_id}`)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div className="stack-list__meta">
+                    <span className={`status-pill ${severityClass(incident.severity)}`}>
+                      {incident.severity}
+                    </span>
+                    <span>{incident.platform}</span>
+                    {isFresh && (
+                      <span
+                        className="status-pill status-pill--monitor"
+                        style={{ marginLeft: "auto", fontSize: 10 }}
+                      >
+                        NEW
+                      </span>
+                    )}
+                  </div>
+                  <strong>{incident.title}</strong>
+                  {incident.summary && (
+                    <p
+                      style={{
+                        marginTop: 4,
+                        fontSize: 12,
+                        color: "var(--ghost)",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                      }}
+                    >
+                      {incident.summary}
+                    </p>
+                  )}
+                  <p style={{ marginTop: 4, fontSize: 11, opacity: 0.7 }}>
+                    {incident.region}
+                  </p>
+                </article>
+              );
+            })}
             {latestIncidents.length === 0 && (
               <article className="stack-list__item">
                 <strong>No incidents yet</strong>
