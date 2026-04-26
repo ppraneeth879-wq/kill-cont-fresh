@@ -86,6 +86,9 @@ CREATE TABLE IF NOT EXISTS incidents (
   map_lat           REAL,
   map_lng           REAL,
   map_region        TEXT,
+  triage_source     TEXT,
+  triage_model      TEXT,
+  triage_latency_ms REAL,
   created_at        TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at        TEXT NOT NULL DEFAULT (datetime('now'))
 );

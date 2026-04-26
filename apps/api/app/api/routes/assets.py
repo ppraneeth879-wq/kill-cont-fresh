@@ -8,6 +8,7 @@ from app.schemas.asset import (
     AssetCreateResponse,
     AssetDetail,
     AssetListResponse,
+    AssetMatchSummary,
     AssetSummary,
 )
 from app.services import repos, storage
@@ -90,9 +91,21 @@ async def upload_asset_media(
             ),
         )
 
+    # Bundle B: run the on-upload matcher against existing feed items.
+    # Never let a matcher bug block the asset registration itself.
+    from app.services import matcher
+
+    try:
+        matches = await matcher.match_asset_against_feeds(asset_id)
+    except Exception:
+        matches = []
+
     updated = repos.get_asset_detail(asset_id)
     await publish("asset.updated", {"asset_id": asset_id})
-    return AssetDetail(**updated)
+
+    detail = AssetDetail(**updated)
+    detail.matches = [AssetMatchSummary(**m) for m in matches]
+    return detail
 
 
 @router.get("/{asset_id}", response_model=AssetDetail)
