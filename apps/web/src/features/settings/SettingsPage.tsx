@@ -133,6 +133,18 @@ export function SettingsPage() {
                   value={geminiLabel(profile.gemini)}
                   tone={geminiTone(profile.gemini.status)}
                 />
+                {/* Bundle D4: cumulative call counters. Only show once we have any data. */}
+                {typeof profile.gemini.total_count === "number" && profile.gemini.total_count > 0 && (
+                  <StatusRow
+                    label="Gemini activity"
+                    value={`${profile.gemini.ok_count ?? 0} live · ${profile.gemini.fallback_count ?? 0} fallback · ${profile.gemini.total_count} total`}
+                    tone={
+                      (profile.gemini.ok_count ?? 0) > 0
+                        ? "status-dot status-dot--ok"
+                        : "status-dot status-dot--warn"
+                    }
+                  />
+                )}
               </div>
             )}
             <div className="settings-card__actions">

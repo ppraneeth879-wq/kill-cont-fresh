@@ -184,6 +184,10 @@ export type GeminiSnapshot = {
   last_latency_ms: number | null;
   configured: boolean;
   model: string;
+  // Bundle D4: cumulative counters since process start.
+  ok_count?: number;
+  fallback_count?: number;
+  total_count?: number;
 };
 
 export type HealthProfile = {

@@ -1,9 +1,16 @@
 """Triage text generator.
 
 Defaults to canned strings keyed by severity. If ``GEMINI_API_KEY`` is set in
-the environment, attempts a single HTTPS call to Gemini 1.5 Flash and parses
-the JSON payload. Any failure falls back to the canned strings, so the demo
-never blocks on a network call.
+the environment, attempts a single HTTPS call to the configured Gemini model
+(default: gemini-2.5-flash with extended thinking) and parses the JSON
+payload. Any failure falls back to the canned strings, so the demo never
+blocks on a network call.
+
+Tuning knobs (env vars on ``Settings``):
+  - GEMINI_API_KEY              — empty string disables Gemini entirely
+  - GEMINI_MODEL                — default ``gemini-2.5-flash``
+  - GEMINI_THINKING_BUDGET      — -1 dynamic / 0 off / positive int cap
+  - GEMINI_TIMEOUT_SECONDS      — per-request timeout (default 15s)
 """
 
 from __future__ import annotations
@@ -31,14 +38,27 @@ LAST_GEMINI_STATUS: GeminiStatus = "unconfigured"
 LAST_GEMINI_LATENCY_MS: float | None = None
 LAST_GEMINI_SOURCE: Literal["gemini", "fallback"] = "fallback"
 
+# Bundle D4: lifetime counters since process start. The Settings page renders
+# them in a small "Gemini activity" tile next to the status dot so judges can
+# see at a glance whether the live model is actually being hit during the demo.
+GEMINI_OK_COUNT: int = 0
+GEMINI_FALLBACK_COUNT: int = 0
+
 
 def current_gemini_snapshot() -> dict[str, Any]:
+    settings = get_settings()
     return {
         "status": LAST_GEMINI_STATUS,
         "last_source": LAST_GEMINI_SOURCE,
         "last_latency_ms": LAST_GEMINI_LATENCY_MS,
-        "configured": bool(get_settings().gemini_api_key),
-        "model": "gemini-1.5-flash",
+        "configured": bool(settings.gemini_api_key),
+        "model": settings.gemini_model,
+        "thinking_budget": settings.gemini_thinking_budget,
+        "timeout_seconds": settings.gemini_timeout_seconds,
+        # Bundle D4: cumulative call counters since process start.
+        "ok_count": GEMINI_OK_COUNT,
+        "fallback_count": GEMINI_FALLBACK_COUNT,
+        "total_count": GEMINI_OK_COUNT + GEMINI_FALLBACK_COUNT,
     }
 
 
@@ -103,6 +123,7 @@ async def generate_triage(
     severity: str,
 ) -> dict[str, str]:
     global LAST_GEMINI_STATUS, LAST_GEMINI_LATENCY_MS, LAST_GEMINI_SOURCE
+    global GEMINI_OK_COUNT, GEMINI_FALLBACK_COUNT
 
     settings = get_settings()
     key = settings.gemini_api_key
@@ -110,18 +131,29 @@ async def generate_triage(
         LAST_GEMINI_STATUS = "unconfigured"
         LAST_GEMINI_SOURCE = "fallback"
         LAST_GEMINI_LATENCY_MS = None
+        GEMINI_FALLBACK_COUNT += 1
         return _canned(severity)
+
+    model = settings.gemini_model or "gemini-2.5-flash"
+    generation_config: dict[str, Any] = {"responseMimeType": "application/json"}
+    # 2.5-series models accept thinkingConfig; older models silently ignore it
+    # but Google's API rejects unknown fields on some endpoints, so only send
+    # the field when the model name explicitly contains "2.5".
+    if "2.5" in model:
+        generation_config["thinkingConfig"] = {
+            "thinkingBudget": settings.gemini_thinking_budget,
+        }
 
     t0 = time.perf_counter()
     try:
-        async with httpx.AsyncClient(timeout=6.0) as client:
+        async with httpx.AsyncClient(timeout=settings.gemini_timeout_seconds) as client:
             resp = await client.post(
-                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={key}",
+                f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}",
                 json={
                     "contents": [
                         {"parts": [{"text": _build_prompt(asset, feed_item, score, severity)}]}
                     ],
-                    "generationConfig": {"responseMimeType": "application/json"},
+                    "generationConfig": generation_config,
                 },
             )
             LAST_GEMINI_LATENCY_MS = round((time.perf_counter() - t0) * 1000, 1)
@@ -130,6 +162,7 @@ async def generate_triage(
                 if parsed and parsed["reason_short"]:
                     LAST_GEMINI_STATUS = "ok"
                     LAST_GEMINI_SOURCE = "gemini"
+                    GEMINI_OK_COUNT += 1
                     return parsed
                 LAST_GEMINI_STATUS = "parse_error"
             elif resp.status_code == 429:
@@ -141,4 +174,5 @@ async def generate_triage(
         LAST_GEMINI_STATUS = "network_error"
 
     LAST_GEMINI_SOURCE = "fallback"
+    GEMINI_FALLBACK_COUNT += 1
     return _canned(severity)

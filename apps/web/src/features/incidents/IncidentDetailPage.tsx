@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { NavLink, useParams } from "react-router-dom";
 import { mediaUrl } from "../../lib/api";
 import { MediaFrame } from "../../components/ui/MediaFrame";
+import { TriageSourceChip } from "../../components/ui/TriageSourceChip";
 import { useIncidentAction, useIncidentDetail } from "./useIncidentDetail";
 
 function toLabel(value: string | undefined): string {
@@ -70,6 +71,16 @@ export function IncidentDetailPage() {
           <div>
             <span className="eyebrow">Incident detail</span>
             <h1 className="section-title">{data.title}</h1>
+            {data.triage_source && (
+              <div style={{ marginTop: 8 }}>
+                <TriageSourceChip
+                  source={data.triage_source}
+                  model={data.triage_model}
+                  latencyMs={data.triage_latency_ms}
+                  size="md"
+                />
+              </div>
+            )}
           </div>
           <span className={`status-pill ${severityClass(data.severity)}`}>{toLabel(data.severity)}</span>
         </div>

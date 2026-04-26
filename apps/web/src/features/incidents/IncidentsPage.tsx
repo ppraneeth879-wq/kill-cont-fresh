@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { mediaUrl } from "../../lib/api";
 import { MediaFrame } from "../../components/ui/MediaFrame";
+import { TriageSourceChip } from "../../components/ui/TriageSourceChip";
 import { useIncidents } from "./useIncidents";
 import { useIncidentDetail } from "./useIncidentDetail";
 
@@ -120,6 +121,15 @@ export function IncidentsPage() {
                   </div>
                   <strong>{incident.title}</strong>
                   <p>{incident.matched_asset}</p>
+                  {incident.triage_source && (
+                    <div style={{ marginTop: 6 }}>
+                      <TriageSourceChip
+                        source={incident.triage_source}
+                        model={incident.triage_model}
+                        latencyMs={incident.triage_latency_ms}
+                      />
+                    </div>
+                  )}
                   <div className="auth-panel__actions" onClick={(event) => event.stopPropagation()}>
                     <button
                       className="pill-link pill-link--ghost"
@@ -148,6 +158,16 @@ export function IncidentsPage() {
               <h2 className="panel__title">
                 {detail?.title ?? selectedSummary?.title ?? "No incident selected"}
               </h2>
+              {(detail?.triage_source ?? selectedSummary?.triage_source) && (
+                <div style={{ marginTop: 8 }}>
+                  <TriageSourceChip
+                    source={detail?.triage_source ?? selectedSummary?.triage_source}
+                    model={detail?.triage_model ?? selectedSummary?.triage_model}
+                    latencyMs={detail?.triage_latency_ms ?? selectedSummary?.triage_latency_ms}
+                    size="md"
+                  />
+                </div>
+              )}
             </div>
             <span className={`status-pill ${severityClass(detail?.severity ?? selectedSummary?.severity)}`}>
               {toLabel(detail?.severity ?? selectedSummary?.severity)}

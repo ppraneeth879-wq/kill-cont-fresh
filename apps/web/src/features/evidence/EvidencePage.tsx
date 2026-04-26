@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { apiBase, getToken, mediaUrl } from "../../lib/api";
 import { MediaFrame } from "../../components/ui/MediaFrame";
+import { TriageSourceChip } from "../../components/ui/TriageSourceChip";
 import { ContextHeader } from "../../components/layout/ContextHeader";
 import { useIncidentDetail } from "../incidents/useIncidentDetail";
 import { useIncidents } from "../incidents/useIncidents";
@@ -254,7 +255,15 @@ export function EvidencePage() {
                 {detail?.title ?? selectedId ?? "No incident selected"}
               </h2>
             </div>
-            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+              {detail?.triage_source && (
+                <TriageSourceChip
+                  source={detail.triage_source}
+                  model={detail.triage_model}
+                  latencyMs={detail.triage_latency_ms}
+                  size="md"
+                />
+              )}
               <span
                 className={`status-pill ${provenance.className}`}
                 title={provenance.tooltip}
