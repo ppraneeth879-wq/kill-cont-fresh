@@ -74,4 +74,7 @@ def incident_to_summary(row: dict) -> dict:
         "created_at": row.get("created_at"),
         "map_lat": row.get("map_lat"),
         "map_lng": row.get("map_lng"),
+        "triage_source": row.get("triage_source"),
+        "triage_model": row.get("triage_model"),
+        "triage_latency_ms": row.get("triage_latency_ms"),
     }

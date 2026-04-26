@@ -32,6 +32,11 @@ class IncidentSummary(BaseModel):
     map_lat: Optional[float] = None
     map_lng: Optional[float] = None
 
+    # Bundle B / Bundle D: surface Gemini provenance for the chip.
+    triage_source: Optional[str] = None        # 'gemini' | 'fallback' | None
+    triage_model: Optional[str] = None
+    triage_latency_ms: Optional[float] = None
+
 
 class IncidentListResponse(BaseModel):
     items: list[IncidentSummary]
@@ -63,6 +68,10 @@ class IncidentDetail(BaseModel):
     map_lng: Optional[float] = None
     created_at: str
     updated_at: str
+
+    triage_source: Optional[str] = None
+    triage_model: Optional[str] = None
+    triage_latency_ms: Optional[float] = None
 
     asset: AssetBrief
     feed_item: FeedItemSummary

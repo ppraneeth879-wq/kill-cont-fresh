@@ -100,6 +100,9 @@ def get_incident_detail(incident_id: str) -> Optional[dict]:
         "map_lng": incident.get("map_lng"),
         "created_at": incident["created_at"],
         "updated_at": incident["updated_at"],
+        "triage_source": incident.get("triage_source"),
+        "triage_model": incident.get("triage_model"),
+        "triage_latency_ms": incident.get("triage_latency_ms"),
         "asset": {
             "id": asset.get("id"),
             "title": asset.get("title"),
@@ -361,8 +364,9 @@ def insert_incident(payload: dict) -> None:
         conn.execute(
             "INSERT INTO incidents (id, org_id, asset_id, feed_item_id, title, severity, "
             "   triage_label, trust_score, spread_score, operator_status, reason_short, "
-            "   reason_detailed, operator_copy, map_region, map_lat, map_lng) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "   reason_detailed, operator_copy, map_region, map_lat, map_lng, "
+            "   triage_source, triage_model, triage_latency_ms) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 payload["id"],
                 payload["org_id"],
@@ -380,5 +384,8 @@ def insert_incident(payload: dict) -> None:
                 payload.get("map_region"),
                 payload.get("map_lat"),
                 payload.get("map_lng"),
+                payload.get("triage_source"),
+                payload.get("triage_model"),
+                payload.get("triage_latency_ms"),
             ),
         )
