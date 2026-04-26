@@ -150,6 +150,18 @@ def init_db() -> None:
     _ensure_parent(path)
     with get_conn() as conn:
         conn.executescript(SCHEMA_SQL)
+        # --- Idempotent column additions for older DBs (Bundle B / Plan 2026-04-26) ---
+        # SQLite has no IF NOT EXISTS for ADD COLUMN; we swallow OperationalError
+        # so re-runs against a freshly-seeded DB don't raise.
+        for ddl in (
+            "ALTER TABLE incidents ADD COLUMN triage_source TEXT",
+            "ALTER TABLE incidents ADD COLUMN triage_model TEXT",
+            "ALTER TABLE incidents ADD COLUMN triage_latency_ms REAL",
+        ):
+            try:
+                conn.execute(ddl)
+            except sqlite3.OperationalError:
+                pass
 
 
 def reset_db() -> None:
