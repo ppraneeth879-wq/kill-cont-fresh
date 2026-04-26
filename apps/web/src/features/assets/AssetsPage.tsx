@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { mediaUrl } from "../../lib/api";
 import { AssetUploadModal } from "./AssetUploadModal";
 import { useAssets } from "./useAssets";
+import type { AssetDetail } from "../../lib/types";
+
+// Bundle A2: how long the new-row flash + toast live before auto-clearing.
+const FLASH_HIDE_MS = 8000;
 
 function toLabel(value: string | undefined): string {
   if (!value) return "Unknown";
@@ -63,8 +67,24 @@ function Thumb({ src, label }: { src: string | undefined; label: string }) {
 
 export function AssetsPage() {
   const [showUploader, setShowUploader] = useState(false);
+  const [lastUploaded, setLastUploaded] = useState<AssetDetail | null>(null);
+  const newRowRef = useRef<HTMLElement | null>(null);
   const assetsQuery = useAssets();
   const assets = assetsQuery.data?.items ?? [];
+
+  // Bundle A2: scroll the freshly-flashed row into view once the list refetches.
+  useEffect(() => {
+    if (!lastUploaded) return;
+    const node = newRowRef.current;
+    if (node) {
+      node.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    const t = window.setTimeout(() => setLastUploaded(null), FLASH_HIDE_MS);
+    return () => window.clearTimeout(t);
+  }, [lastUploaded]);
+
+  const matchesCount = lastUploaded?.matches?.length ?? 0;
+  const incidentsCount = lastUploaded?.matches?.filter((m) => !!m.incident_id).length ?? 0;
 
   return (
     <div className="page-frame">
@@ -89,6 +109,32 @@ export function AssetsPage() {
         </div>
       </motion.section>
 
+      {lastUploaded && (
+        <div className="upload-toast" role="status">
+          <div>
+            <span className="upload-toast__title">
+              Protected: {lastUploaded.title}
+            </span>
+            <span className="upload-toast__body">
+              {matchesCount === 0
+                ? "No reposts found in the current feed."
+                : `${matchesCount} match${matchesCount === 1 ? "" : "es"} surfaced` +
+                  (incidentsCount > 0
+                    ? ` · ${incidentsCount} incident${incidentsCount === 1 ? "" : "s"} created`
+                    : "")}
+            </span>
+          </div>
+          <button
+            className="upload-toast__close"
+            onClick={() => setLastUploaded(null)}
+            type="button"
+            aria-label="Dismiss"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       <section className="table-panel">
         <div className="table-panel__toolbar">
           <span className="meta-chip meta-chip--compact">
@@ -107,10 +153,12 @@ export function AssetsPage() {
         >
           {assets.map((asset) => {
             const thumb = mediaUrl(asset.preview_path);
+            const isNew = lastUploaded?.id === asset.asset_id;
             return (
               <article
-                className="stack-list__item"
+                className={`stack-list__item${isNew ? " stack-list__item--flash" : ""}`}
                 key={asset.asset_id}
+                ref={isNew ? newRowRef : undefined}
                 style={{
                   display: "grid",
                   gridTemplateColumns: "64px 1fr auto auto auto",
@@ -148,7 +196,11 @@ export function AssetsPage() {
           )}
         </div>
 
-        <AssetUploadModal onClose={() => setShowUploader(false)} open={showUploader} />
+        <AssetUploadModal
+          onClose={() => setShowUploader(false)}
+          onUploaded={(detail) => setLastUploaded(detail)}
+          open={showUploader}
+        />
       </section>
     </div>
   );

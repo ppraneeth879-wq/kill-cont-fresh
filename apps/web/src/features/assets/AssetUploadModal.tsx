@@ -1,12 +1,21 @@
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useAssetUpload } from "./useAssets";
+import type { AssetDetail } from "../../lib/types";
 
 type AssetUploadModalProps = {
   open: boolean;
   onClose: () => void;
+  // Bundle A: surface the resolved AssetDetail so the page can flash the new
+  // row + show a "matches: N (M incidents)" toast without a re-fetch.
+  onUploaded?: (asset: AssetDetail) => void;
 };
 
-export function AssetUploadModal({ open, onClose }: AssetUploadModalProps) {
+// Bundle A1: keep the form honest. Backend imagehash chokes on >25 MB blobs
+// on the demo box, and the matcher only consumes images today.
+const MAX_FILE_BYTES = 25 * 1024 * 1024;
+const IMAGE_MIME_PREFIX = "image/";
+
+export function AssetUploadModal({ open, onClose, onUploaded }: AssetUploadModalProps) {
   const upload = useAssetUpload();
   const [title, setTitle] = useState("");
   const [assetType, setAssetType] = useState("image");
@@ -15,25 +24,53 @@ export function AssetUploadModal({ open, onClose }: AssetUploadModalProps) {
   const [description, setDescription] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string>("");
+  const [fieldError, setFieldError] = useState<{ title?: string; file?: string }>({});
+  const titleRef = useRef<HTMLInputElement>(null);
 
-  const canSubmit = useMemo(() => !!title.trim() && !!file && !upload.isPending, [file, title, upload.isPending]);
+  // Bundle A1: autofocus the first required field every time the modal opens.
+  useEffect(() => {
+    if (open && titleRef.current) {
+      titleRef.current.focus();
+    }
+  }, [open]);
+
+  const canSubmit = useMemo(
+    () => !!title.trim() && !!file && !upload.isPending,
+    [file, title, upload.isPending],
+  );
+
+  function validateFile(f: File | null): string | undefined {
+    if (!f) return "Please choose a file to upload.";
+    if (f.size > MAX_FILE_BYTES) {
+      const mb = (f.size / (1024 * 1024)).toFixed(1);
+      return `File is ${mb} MB — max 25 MB for the demo matcher.`;
+    }
+    if (!f.type.startsWith(IMAGE_MIME_PREFIX)) {
+      return "Only image files are matched today (image/* mime type).";
+    }
+    return undefined;
+  }
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!file) {
-      setError("Please choose a file to upload.");
+    const titleErr = title.trim() ? undefined : "Title is required.";
+    const fileErr = validateFile(file);
+    if (titleErr || fileErr) {
+      setFieldError({ title: titleErr, file: fileErr });
+      setError("");
       return;
     }
 
+    setFieldError({});
     setError("");
     try {
-      await upload.mutateAsync({
+      const detail = await upload.mutateAsync({
         title: title.trim(),
         asset_type: assetType,
         event_name: eventName.trim(),
         provenance_status: provenanceStatus,
         description: description.trim() || undefined,
-        file,
+        file: file!,
       });
 
       setTitle("");
@@ -42,6 +79,7 @@ export function AssetUploadModal({ open, onClose }: AssetUploadModalProps) {
       setProvenanceStatus("present");
       setDescription("");
       setFile(null);
+      onUploaded?.(detail);
       onClose();
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "Upload failed.");
@@ -63,11 +101,18 @@ export function AssetUploadModal({ open, onClose }: AssetUploadModalProps) {
         <label className="auth-panel__field">
           <span>Title</span>
           <input
+            aria-invalid={!!fieldError.title}
             onChange={(event) => setTitle(event.target.value)}
             placeholder="Final whistle broadcast clip"
+            ref={titleRef}
             type="text"
             value={title}
           />
+          {fieldError.title && (
+            <span className="auth-panel__field-error" role="alert">
+              {fieldError.title}
+            </span>
+          )}
         </label>
 
         <div className="table-grid table-grid--form">
@@ -114,10 +159,25 @@ export function AssetUploadModal({ open, onClose }: AssetUploadModalProps) {
         <label className="auth-panel__field">
           <span>Media file</span>
           <input
-            accept="image/*,video/*"
-            onChange={(event) => setFile(event.target.files?.[0] ?? null)}
+            accept="image/*"
+            aria-invalid={!!fieldError.file}
+            onChange={(event) => {
+              const next = event.target.files?.[0] ?? null;
+              setFile(next);
+              setFieldError((prev) => ({ ...prev, file: validateFile(next) }));
+            }}
             type="file"
           />
+          {file && !fieldError.file && (
+            <span className="auth-panel__field-hint">
+              {file.name} · {(file.size / (1024 * 1024)).toFixed(1)} MB
+            </span>
+          )}
+          {fieldError.file && (
+            <span className="auth-panel__field-error" role="alert">
+              {fieldError.file}
+            </span>
+          )}
         </label>
 
         <div className="auth-panel__actions">

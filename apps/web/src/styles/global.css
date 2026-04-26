@@ -1206,10 +1206,105 @@ button {
   box-shadow: 0 0 0 2px rgba(0, 153, 255, 0.15);
 }
 
+/* Native <option> elements inherit the OS dropdown chrome; force a readable
+   palette so dark-themed selects don't render white-on-white on Windows. */
+.auth-panel__field select option,
+select option {
+  color: #11192a;
+  background: #f4f7ff;
+}
+
 .auth-panel__error {
   margin: 2px 0 0;
   color: var(--strike);
   font-size: 13px;
+}
+
+/* Bundle A1: inline field-level validation. */
+.auth-panel__field-error {
+  display: block;
+  margin-top: 6px;
+  color: var(--strike);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+.auth-panel__field-hint {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.auth-panel__field input[aria-invalid="true"],
+.auth-panel__field select[aria-invalid="true"],
+.auth-panel__field textarea[aria-invalid="true"] {
+  border-color: var(--strike);
+  box-shadow: 0 0 0 1px rgba(255, 100, 100, 0.35);
+}
+
+/* Bundle A2: post-upload toast + new-row flash. */
+.upload-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    180deg,
+    rgba(0, 153, 255, 0.18),
+    rgba(0, 153, 255, 0.06)
+  );
+  border: 1px solid var(--accent-strong);
+  color: var(--text);
+  box-shadow: var(--shadow-soft);
+  animation: upload-toast-in 0.35s ease-out;
+}
+
+.upload-toast__title {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.upload-toast__body {
+  display: block;
+  font-size: 13px;
+  color: var(--ghost);
+}
+
+.upload-toast__close {
+  margin-left: auto;
+  background: transparent;
+  border: 0;
+  color: var(--ghost);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.upload-toast__close:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+}
+
+@keyframes upload-toast-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.stack-list__item--flash {
+  animation: stack-row-flash 1.6s ease-out;
+}
+
+@keyframes stack-row-flash {
+  0%   { box-shadow: 0 0 0 0 var(--accent-strong); background-color: rgba(0, 153, 255, 0.12); }
+  60%  { box-shadow: 0 0 0 4px transparent; background-color: rgba(0, 153, 255, 0.04); }
+  100% { box-shadow: 0 0 0 0 transparent; background-color: transparent; }
 }
 
 .table-grid--form {
