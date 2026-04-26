@@ -42,8 +42,23 @@ class Settings(BaseSettings):
     # Matching
     phash_match_threshold: float = 0.80
 
+    # Bundle B: when an upload finds zero real matches, synthesize ONE
+    # derived feed-item from the asset's primary so the demo flow always
+    # produces a visible incident. Override with SYNTHESIZE_DEMO_MATCH=false
+    # in public deployments where the matcher should only show real hits.
+    synthesize_demo_match: bool = True
+
     # Triage (optional)
     gemini_api_key: str = ""
+    # Gemini model name. Default: 2.5-flash with extended thinking.
+    # Override to "gemini-1.5-flash" to disable thinking (faster, cheaper).
+    gemini_model: str = "gemini-2.5-flash"
+    # Thinking budget in tokens. -1 = dynamic (model decides), 0 = disabled,
+    # positive int = cap. Only honoured by 2.5-series models.
+    gemini_thinking_budget: int = -1
+    # Per-request timeout (seconds). Bumped from the original 6s because
+    # 2.5-flash with thinking can take 8-12s on the free tier.
+    gemini_timeout_seconds: float = 15.0
 
     # CORS (comma-separated)
     allowed_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
