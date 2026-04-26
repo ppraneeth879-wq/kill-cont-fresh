@@ -4,6 +4,28 @@ This file is the running execution journal for the team.
 
 Use it after every meaningful change so the project stays in sync.
 
+## 2026-04-26 — Bundle B / A / C / D (fix-incompleteness plan)
+
+Closed the six demo-blocking gaps the user reported during playthrough (upload→matcher→incidents→evidence chain, live-watch refresh per click, Gemini visibility everywhere). Plan and spec live at `docs/superpowers/plans/2026-04-26-fix-incompleteness.md` + `docs/superpowers/specs/2026-04-26-fix-incompleteness-design.md`.
+
+Commits (in order, on `second_branch`):
+- `c2c4a1f` feat(b1): idempotent ALTERs add triage_source/model/latency_ms columns to incidents
+- `8e72aab` feat(b2): Settings.synthesize_demo_match flag (default True; off in public deployments)
+- `010f01d` feat(b3): persist + read three triage columns through repos (sqlite + firestore)
+- `544b818` feat(b4): AssetMatchSummary schema + AssetDetail.matches
+- `f35ba00` feat(b5): app/services/matcher.py — match_asset_against_feeds + _score_pair + _synthesize_one_match
+- `81cfa25` feat(b6): simulate_incident captures Gemini source/model/latency
+- `97dba08` feat(b7): upload route runs matcher + returns AssetDetail.matches; SCHEMA_SQL gains triage columns
+- `aa7d964` feat(b8): frontend types for AssetMatchSummary + incident triage fields
+- `7828eba` feat(a1+a2): asset upload form polish + post-upload flash & toast
+- `4486bab` feat(c1+c2+c3): live emitter promotes multiple incidents per run + visible NEW pulse
+- `b96cda2` feat(d1+d2+d3+d4): visible Gemini provenance — chips + counters in Settings
+
+Verification: compileall clean, `npx vite build` clean (514 modules), `python scripts/smoke.py` 10/10 green in 7.56s, end-to-end simulate-incident with `GEMINI_API_KEY` set returns `triage_source=gemini`, `latency_ms~5677`.
+
+Next: S12 — first manual cloud deploy (`gcloud run deploy` + `firebase deploy` against the `killcont-demo` project), then back-fill `PUBLIC_WEB_ORIGIN` + `ALLOWED_ORIGINS` on Cloud Run with the hosted FE URL.
+
+
 ## Logging Rules
 
 - Add one entry per meaningful implementation session.

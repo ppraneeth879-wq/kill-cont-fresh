@@ -111,9 +111,32 @@ No test framework is configured — verification is `compileall` + `npm run buil
 ## Known Gaps (being closed by the active plan)
 
 1. **S12 — first manual deploy.** All deploy artifacts are landed (Dockerfile, deploy-api.sh, firebase.json, deploy-web.sh) but `gcloud run deploy` + `firebase deploy` haven't been run yet against the live `killcont-demo` project. Once deployed, back-fill `PUBLIC_WEB_ORIGIN` + `ALLOWED_ORIGINS` on Cloud Run with the hosted FE URL and add the hosting domain to Firebase Auth → authorized domains.
-2. `tsc -b` trips on a pre-existing `TS5103` toolchain warning during `npm run build`. `npx vite build` produces a fully working bundle (513 modules) and is what `deploy-web.sh` falls back to. Worth fixing the tsconfig flag separately.
+2. `tsc -b` trips on a pre-existing `TS5103` toolchain warning during `npm run build`. `npx vite build` produces a fully working bundle (514 modules) and is what `deploy-web.sh` falls back to. Worth fixing the tsconfig flag separately.
 
-## Recently closed gaps (DP1–DP15, S2–S11)
+## Recently closed gaps (Bundles B/A/C/D, DP1–DP15, S2–S11)
+
+### Bundle B — On-upload matcher (2026-04-26)
+
+- **The biggest visible win:** uploading a new asset now actually surfaces matches. `app/services/matcher.py::match_asset_against_feeds(asset_id)` runs at the end of `routes/assets.py::upload_asset_media`, scores the asset's pHash against every existing feed_item with a pHash, writes `match_candidate` rows, promotes strong matches to `incidents` (Gemini-triaged), and returns a list of `AssetMatchSummary` for the FE toast.
+- If real-feed scoring comes up empty, the matcher synthesizes one derived feed-item from the asset's primary so the upload always produces at least one visible incident. Gated by `Settings.synthesize_demo_match=True` (off-able for public deploys).
+- SQLite SCHEMA_SQL canonical table now carries `triage_source/triage_model/triage_latency_ms`, so `/demo/reset` no longer breaks `simulate_incident` writes.
+
+### Bundle A — Asset upload form UX (2026-04-26)
+
+- `AssetUploadModal`: autofocus title on open, inline validation (title required, file ≤ 25 MB, `image/*` mime), `aria-invalid` red ring + per-field error/hint copy. File input narrowed to `image/*`.
+- `AssetsPage` consumes `AssetDetail.matches` from the mutation: `.upload-toast` above the table summarising "N matches surfaced · M incidents created", new row scrolls into view + flashes for 1.6 s, auto-clears after 8 s.
+
+### Bundle C — Live Watch honest synthetic stream (2026-04-26)
+
+- `_live_emitter` PROMOTING_STATUSES = {"Restream suspected", "Signal match"}. Both qualify a segment for incident promotion; `promotion_idx` rotates `SIMULATED_PLATFORMS` per fire so consecutive rail rows look distinct (piracy-mirror → youtube → reddit → ...).
+- LiveWatch eyebrow + subtitle made honest about the simulation. Fresh-from-matcher rail rows clickable, render `incident.summary` 2-line clamped, "NEW" pill + flash on SSE `incident.created` for ~4.5 s.
+
+### Bundle D — Gemini visibility (2026-04-26)
+
+- New `apps/web/src/components/ui/TriageSourceChip.tsx`: pulse-dot chip ("Gemini · gemini-2.5-flash · 5.7 s" or "Canned reason"). Two sizes, full tooltip. Wired into IncidentsPage rows + selected-detail header, IncidentDetailPage hero, EvidencePage case-summary panel.
+- `triage.py` lifetime `GEMINI_OK_COUNT`/`GEMINI_FALLBACK_COUNT` counters; `current_gemini_snapshot()` returns `{ok_count, fallback_count, total_count}`. `/health/profile.gemini` relays them; Settings → System Status shows a "Gemini activity: N live · M fallback · T total" row when any call has run.
+
+### Earlier closed gaps (S2–S11, DP1–DP15)
 
 ### S3 — Firestore metadata adapter (2026-04-25)
 

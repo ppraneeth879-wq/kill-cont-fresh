@@ -1,6 +1,6 @@
 # KillCont Status
 
-Last updated: 2026-04-25
+Last updated: 2026-04-26
 
 ## Overall State
 
@@ -48,6 +48,10 @@ Last updated: 2026-04-25
 | Threat map | Completed | SVG world map on Overview + LiveWatch with `map_lat`/`map_lng` + propagation arcs (DP7) |
 | UX polish (DP+ phase) | Completed | DP8 placeholder imagery, DP9 evidence context, DP10 settings cards, DP11 livewatch refresh, DP12 Gemini visibility, DP13 ContextHeader, DP14 MediaFrame, DP15 layout sweep |
 | Public cloud profile | Completed | Adapter seams (S2), Firestore (S3), Cloud Storage (S4), Firebase sign-in (S5), smoke harness (S6), Cloud Run (S10) + Firebase Hosting (S11) deploy artifacts all landed. Manual `gcloud run deploy` + `firebase deploy` is the final step (see `infra/google-cloud/deploy-api.sh` + `deploy-web.sh`). |
+| On-upload matcher (Bundle B) | Completed | `app/services/matcher.py` runs on every upload, persists matches via `repos.insert_*`, promotes to incident with Gemini triage, synthesizes one demo match if real-feed scoring is empty. New `triage_source/triage_model/triage_latency_ms` columns on incidents. |
+| Asset upload UX (Bundle A) | Completed | Autofocus + inline validation + 25 MB cap on the modal; post-upload toast with match summary, scroll-into-view + flash on the new asset row. |
+| Live watch refresh (Bundle C) | Completed | Multi-incident emitter (Restream-suspected + Signal-match both promote, platform rotates per fire). Honest "demo stream" copy. Fresh-from-matcher rail shows NEW pulse + reason snippet, rows clickable. |
+| Gemini visibility (Bundle D) | Completed | Shared `TriageSourceChip` (Gemini · model · latency or Canned reason) on Incidents/Detail/Evidence. `/health/profile.gemini` exposes lifetime ok_count/fallback_count/total_count, surfaced in Settings → System Status. |
 | Documentation operating model | Active | Status and logbook updated alongside implementation |
 
 ## Current Runtime Stack
@@ -67,6 +71,21 @@ Last updated: 2026-04-25
 - Metadata on Firestore.
 - Media on Cloud Storage.
 - Keep local SQLite/filesystem profile for offline demo fallback and rapid local testing.
+
+## Closed (2026-04-26) — Bundle B / A / C / D (Plan: fix-incompleteness)
+
+User-reported demo gaps from playthrough I1–I6 ("upload doesn't register matches", "Fresh-from-matcher doesn't refresh", "what is Gemini even doing here?", etc.) closed end-to-end. Plan: `docs/superpowers/plans/2026-04-26-fix-incompleteness.md`.
+
+- **Bundle B — On-upload matcher.** New `app/services/matcher.py` runs after every successful asset upload: scores against existing feed_items, writes `match_candidates`, promotes strong matches to `incidents` with full Gemini triage, captures `triage_source/triage_model/triage_latency_ms`, and synthesizes one derived feed-item if no real matches cleared the threshold (gated by `Settings.synthesize_demo_match=True`). Adapter-clean — every write goes through `repos.insert_*`. SQLite SCHEMA_SQL gained the three triage columns at the canonical level so `/demo/reset` no longer breaks. Verified: upload of an existing preview JPG took the incident count 4 → 5 with `AssetDetail.matches[0].triage_source = "gemini"`.
+- **Bundle A — Asset upload form UX.** `AssetUploadModal` now autofocuses the title input on open, runs inline validation (title required, file ≤ 25 MB, `image/*` mime), and shows the chosen file's name+size as a hint. `AssetsPage` consumes the resolved `AssetDetail.matches` from the mutation: a slide-in toast above the table summarises "N matches surfaced · M incidents created" (or "no reposts found"), the new row scrolls into the centre of the viewport, flashes for 1.6 s, and auto-dismisses after 8 s.
+- **Bundle C — Live Watch honest stream.** `_live_emitter` now promotes on both "Restream suspected" and "Signal match" segments and rotates `SIMULATED_PLATFORMS` per fire — an 8-segment run produces ~3 incidents across 3 different platforms/regions instead of the previous 1. LiveWatch eyebrow + subtitle made honest about the simulation. Fresh-from-matcher rail rows are clickable, render the reason snippet (2-line clamp), and flash + show a "NEW" pill when SSE delivers `incident.created`.
+- **Bundle D — Gemini visibility.** New `apps/web/src/components/ui/TriageSourceChip.tsx` (pulse-dot, two sizes, tooltip with full provenance) wired into IncidentsPage rows + selected-detail header, IncidentDetailPage hero, and EvidencePage case-summary panel. `triage.py` keeps lifetime `GEMINI_OK_COUNT/GEMINI_FALLBACK_COUNT` counters; `/health/profile.gemini` now carries `ok_count/fallback_count/total_count`. Settings → System Status shows a "Gemini activity: N live · M fallback · T total" row whenever any call has run.
+
+Verification (2026-04-26):
+- `python -m compileall app` clean.
+- `npx vite build` clean (514 modules, 22.50 kB CSS, 584 kB JS).
+- `python scripts/smoke.py` 10/10 green in 7.56 s.
+- End-to-end: seed → simulate-incident with Gemini key set → incident.triage_source=`gemini`, model=`gemini-2.5-flash`, latency_ms≈5677; `/health/profile` ok_count=1, total=1.
 
 ## Closed (2026-04-25) — DP+ UX Polish Sprint
 
