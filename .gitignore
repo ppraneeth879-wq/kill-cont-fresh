@@ -5,47 +5,24 @@ dist/
 
 # Python
 __pycache__/
-*.pyc
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 .venv/
 venv/
 
-# Environment (never commit real secrets)
+# Environment
 .env
 .env.local
 .env.*.local
-.env.production
 
 # Firebase / Google Cloud
 service-account.json
 firebase-debug.log
-firebase-debug.*.log
-.firebase/
-
-# Local data and uploads (SQLite DB + uploaded media)
-apps/api/var/
-var/
-
-# Agent / IDE / tool caches and per-user config
-.claude/
-.gemini/
-.cursor/
-.aider*
-.idea/
-.vscode/
-
-# Graphify cache (regenerable, large, noisy in PRs)
-graphify-out/cache/
-graphify-out/graph.html
-graphify-out/graph.json
-graphify-out/GRAPH_REPORT.md
 
 # OS
 Thumbs.db
 Desktop.ini
-.DS_Store
 
 # Logs
 *.log
@@ -53,6 +30,10 @@ Desktop.ini
 # Coverage
 coverage/
 htmlcov/
+
+# IDE
+.idea/
+.vscode/
 
 # Build artifacts
 build/
