@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { apiBase, getToken, mediaUrl } from "../../lib/api";
@@ -7,6 +7,7 @@ import { TriageSourceChip } from "../../components/ui/TriageSourceChip";
 import { ContextHeader } from "../../components/layout/ContextHeader";
 import { useIncidentDetail } from "../incidents/useIncidentDetail";
 import { useIncidents } from "../incidents/useIncidents";
+import { useSSE } from "../../lib/sse";
 
 function severityClass(severity: string | undefined): string {
   const normalized = (severity ?? "monitor").toLowerCase();
@@ -98,6 +99,33 @@ export function EvidencePage() {
 
   const [noticeState, setNoticeState] = useState<"idle" | "preparing" | "error">("idle");
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
+
+  // Bundle E: "N new cases" jump banner. Increments on incident.created
+  // events that don't match the currently-viewed incident; auto-clears
+  // after 30s of no new events, or immediately on click.
+  const [incomingCount, setIncomingCount] = useState(0);
+  const [latestNewId, setLatestNewId] = useState<string | null>(null);
+  const lastEventAt = useRef<number>(0);
+
+  useSSE((ev) => {
+    if (ev.type !== "incident.created") return;
+    const id = (ev.data?.incident_id as string | undefined) ?? "";
+    if (!id || id === selectedId) return;
+    setIncomingCount((c) => c + 1);
+    setLatestNewId(id);
+    lastEventAt.current = Date.now();
+  });
+
+  useEffect(() => {
+    if (incomingCount === 0) return;
+    const t = setInterval(() => {
+      if (Date.now() - lastEventAt.current > 30_000) {
+        setIncomingCount(0);
+        setLatestNewId(null);
+      }
+    }, 1000);
+    return () => clearInterval(t);
+  }, [incomingCount]);
 
   const points = [
     detail?.reason_short,
@@ -191,6 +219,19 @@ export function EvidencePage() {
 
   const actions = (
     <>
+      {incomingCount > 0 && latestNewId && (
+        <button
+          className="pill-link pill-link--solid evidence-jump-banner"
+          onClick={() => {
+            goTo(latestNewId);
+            setIncomingCount(0);
+            setLatestNewId(null);
+          }}
+          type="button"
+        >
+          ⚡ {incomingCount} new case{incomingCount === 1 ? "" : "s"} — View latest
+        </button>
+      )}
       <button
         className="pill-link pill-link--ghost"
         disabled={!prevIncident}

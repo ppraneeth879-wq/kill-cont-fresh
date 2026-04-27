@@ -1243,6 +1243,24 @@ select option {
   box-shadow: 0 0 0 1px rgba(255, 100, 100, 0.35);
 }
 
+/* Bundle E: Evidence "N new cases" jump banner. Yellow accent so it
+   stands out from the standard prev/next/export actions. */
+.evidence-jump-banner {
+  background: linear-gradient(180deg, rgba(242, 184, 100, 0.22), rgba(242, 184, 100, 0.06));
+  border-color: rgba(242, 184, 100, 0.55);
+  color: #fbe2b8;
+  animation: evidence-jump-banner-in 0.35s ease-out;
+}
+
+.evidence-jump-banner:hover {
+  background: linear-gradient(180deg, rgba(242, 184, 100, 0.32), rgba(242, 184, 100, 0.12));
+}
+
+@keyframes evidence-jump-banner-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* Bundle D1: TriageSourceChip — Gemini vs canned-fallback provenance. */
 .triage-chip {
   display: inline-flex;
