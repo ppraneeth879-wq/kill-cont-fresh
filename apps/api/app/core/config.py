@@ -42,6 +42,13 @@ class Settings(BaseSettings):
     # Matching
     phash_match_threshold: float = 0.80
 
+    # Bundle E: asset-vs-asset duplicate detection. Tighter than the
+    # asset-vs-feed_item threshold because we are claiming "these are the
+    # same image," not "this is a derivative." 0.92 is loose enough for
+    # compression/resize tolerance but tight enough to ignore visually
+    # similar placeholders.
+    phash_duplicate_threshold: float = 0.92
+
     # Bundle B: when an upload finds zero real matches, synthesize ONE
     # derived feed-item from the asset's primary so the demo flow always
     # produces a visible incident. Override with SYNTHESIZE_DEMO_MATCH=false
