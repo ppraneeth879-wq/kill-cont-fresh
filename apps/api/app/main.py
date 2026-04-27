@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from fastapi import FastAPI, Request
@@ -8,10 +9,13 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 
 from app.api.router import api_router
-from app.core.config import get_settings
+from app.core.config import API_ROOT, get_settings
 from app.services import storage
 from app.services.authn import AuthConfigurationError, AuthError, authenticate_request_token
 from app.services.db import init_db
+
+
+_log = logging.getLogger("killcont.startup")
 
 
 settings = get_settings()
@@ -69,6 +73,36 @@ async def app_auth(request: Request, call_next):
 def _startup() -> None:
     settings.media_dir_obj.mkdir(parents=True, exist_ok=True)
     init_db()
+    _verify_auth_config()
+
+
+def _verify_auth_config() -> None:
+    """Bundle F: print a clear status line on startup so a misconfigured
+    Firebase setup is obvious in stdout/log files instead of silently
+    failing on the first sign-in attempt. Uses print() rather than
+    logging because uvicorn's default log config doesn't surface custom
+    INFO loggers reliably."""
+    if settings.auth_backend == "firebase":
+        if settings.firebase_credentials_path:
+            path = Path(settings.firebase_credentials_path)
+            if not path.is_absolute():
+                path = API_ROOT / path
+            if path.exists():
+                print(f"[killcont.startup] AUTH_BACKEND=firebase using credentials at {path}")
+            else:
+                print(
+                    f"[killcont.startup] WARNING: AUTH_BACKEND=firebase but "
+                    f"FIREBASE_CREDENTIALS_PATH={settings.firebase_credentials_path} "
+                    f"does not exist - sign-in will fail until this is fixed",
+                    flush=True,
+                )
+        else:
+            print("[killcont.startup] AUTH_BACKEND=firebase using Application Default Credentials")
+    else:
+        print(
+            f"[killcont.startup] AUTH_BACKEND={settings.auth_backend} "
+            f"(demo mode - anyone can sign in with email+name)"
+        )
 
 
 # --- Root + routers --------------------------------------------------------

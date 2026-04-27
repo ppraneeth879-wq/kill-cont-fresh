@@ -246,18 +246,31 @@ def update_incident_severity(incident_id: str, severity: str) -> Optional[dict]:
     return row
 
 
-def upsert_user(user_id: str, email: str, display_name: str, org_id: str) -> dict:
+def upsert_user(
+    user_id: str,
+    email: str,
+    display_name: str,
+    org_id: str,
+    role: Optional[str] = None,
+) -> dict:
+    """Insert or update a user row.
+
+    Bundle F: ``role`` only applies to new inserts. Existing users keep
+    their current role so a manual admin promotion isn't undone the next
+    time they sign in.
+    """
     with get_conn() as conn:
         existing = conn.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
         if existing:
             conn.execute(
-                "UPDATE users SET email = ?, display_name = ? WHERE id = ?",
-                (email, display_name, user_id),
+                "UPDATE users SET email = ?, display_name = ?, org_id = ? WHERE id = ?",
+                (email, display_name, org_id, user_id),
             )
         else:
             conn.execute(
-                "INSERT INTO users (id, email, display_name, org_id) VALUES (?, ?, ?, ?)",
-                (user_id, email, display_name, org_id),
+                "INSERT INTO users (id, email, display_name, org_id, role) "
+                "VALUES (?, ?, ?, ?, ?)",
+                (user_id, email, display_name, org_id, role or "admin"),
             )
         row = conn.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
     return row

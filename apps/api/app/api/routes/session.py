@@ -46,11 +46,15 @@ def login(body: LoginRequest) -> LoginResponse:
         display_name = body.display_name
         token = f"killcont-demo-{user_id}"
 
+    # Bundle F: Google sign-ins (open access) default to "operator". Demo
+    # mode keeps its implicit "admin" so existing demo flows are unchanged.
+    new_user_role = "operator" if mode == "firebase" else None
     user = repos.upsert_user(
         user_id=user_id,
         email=email,
         display_name=display_name,
         org_id=settings.demo_org_id,
+        role=new_user_role,
     )
 
     return LoginResponse(

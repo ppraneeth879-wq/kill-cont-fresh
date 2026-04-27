@@ -364,12 +364,20 @@ def update_incident_severity(incident_id: str, severity: str) -> Optional[dict]:
     return _doc_to_dict(ref.get())
 
 
-def upsert_user(user_id: str, email: str, display_name: str, org_id: str) -> dict:
+def upsert_user(
+    user_id: str,
+    email: str,
+    display_name: str,
+    org_id: str,
+    role: Optional[str] = None,
+) -> dict:
+    """Bundle F: ``role`` only applies to new inserts; existing users keep
+    their current role across sign-ins."""
     db = _client()
     ref = db.collection("users").document(user_id)
     snap = ref.get()
     if snap.exists:
-        ref.update({"email": email, "display_name": display_name})
+        ref.update({"email": email, "display_name": display_name, "org_id": org_id})
     else:
         ref.set(
             {
@@ -377,7 +385,7 @@ def upsert_user(user_id: str, email: str, display_name: str, org_id: str) -> dic
                 "email": email,
                 "display_name": display_name,
                 "org_id": org_id,
-                "role": "admin",
+                "role": role or "admin",
                 "created_at": _now_iso(),
             }
         )

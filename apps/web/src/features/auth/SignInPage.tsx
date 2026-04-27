@@ -36,7 +36,18 @@ export function SignInPage() {
       await signIn(cred.email, cred.displayName);
       navigate("/app/overview");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Google sign-in failed");
+      // Bundle F: surface a clean, recoverable message for the common
+      // popup-cancel paths instead of dumping a Firebase exception trace.
+      const code = (err as { code?: string })?.code ?? "";
+      if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") {
+        setError("Sign-in cancelled. Try again, or pick a different account.");
+      } else if (code === "auth/popup-blocked") {
+        setError("Browser blocked the popup. Please allow popups for this site and retry.");
+      } else if (code === "auth/unauthorized-domain") {
+        setError("This domain isn't on the Firebase Authorized Domains list. Add it in Firebase Console -> Authentication -> Settings.");
+      } else {
+        setError(err instanceof Error ? err.message : "Google sign-in failed");
+      }
     } finally {
       setPopupBusy(false);
     }

@@ -4,6 +4,37 @@ This file is the running execution journal for the team.
 
 Use it after every meaningful change so the project stays in sync.
 
+## 2026-04-27 (later) — Bundle F (real Google sign-in)
+
+Wired real Google sign-in for production deployment. Code-side wiring was already 90% in place from S5 (2026-04-25); this bundle fills the remaining gaps + writes the operator-facing `infra/google-cloud/SETUP.md` walkthrough.
+
+Spec: `docs/superpowers/specs/2026-04-27-real-google-auth-design.md`.
+
+Decisions locked during brainstorming (4 questions, all "A"):
+- Q1: Open access — any Google account auto-joined to demo org as `operator`
+- Q2: Fresh Firebase project, write SETUP.md walkthrough
+- Q3: Service account JSON at `apps/api/service-account.json` (instead of ADC) — works on any machine without `gcloud` CLI install
+- Q4: `AUTH_BACKEND=demo` stays as the default (offline-friendly), firebase is opt-in
+
+Code changes:
+- `repos.upsert_user(role=...)` kwarg added to sqlite + firestore adapters. Only applies to inserts; existing user rows preserve their role across re-sign-ins.
+- `/session/login` passes `role="operator"` for firebase-mode sign-ins, `None` (defaults to `"admin"`) for demo.
+- `main.py` startup hook prints a clear banner: `[killcont.startup] AUTH_BACKEND=firebase using credentials at .../service-account.json` (or `WARNING: ... does not exist`).
+- `SignInPage.tsx` catches `auth/popup-closed-by-user`, `auth/cancelled-popup-request`, `auth/popup-blocked`, `auth/unauthorized-domain` and renders friendly error copy instead of raw Firebase exception traces.
+- `apps/api/.env.example` + `apps/web/.env.example` get pointer comments to SETUP.md.
+
+New file:
+- `infra/google-cloud/SETUP.md` (~250 lines) — operator walkthrough covering Part 1 (real Google sign-in: 8 steps from "fresh Google account" to "Continue with Google works locally") and Part 2 (public deployment: 11 steps from billing setup through Cloud Run + Firebase Hosting + CORS back-fill).
+
+Verification (2026-04-27):
+- `python -m compileall app` clean.
+- `npx vite build` clean (515 modules).
+- `python scripts/smoke.py` 10/10 green in 6.28s in demo mode (no regression).
+- Startup banner `[killcont.startup] AUTH_BACKEND=demo (demo mode - anyone can sign in with email+name)` visible in stdout.
+- Firebase mode end-to-end verification deferred to user (requires their Firebase project provisioning per Part 1 of SETUP.md).
+
+Next: user follows SETUP.md Part 1 to provision Firebase project, then Part 2 for the public deploy.
+
 ## 2026-04-27 — Bundle E (live-cascade-and-duplicates plan)
 
 Closed two demo gaps surfaced during playthrough:

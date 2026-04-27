@@ -113,7 +113,14 @@ No test framework is configured — verification is `compileall` + `npm run buil
 1. **S12 — first manual deploy.** All deploy artifacts are landed (Dockerfile, deploy-api.sh, firebase.json, deploy-web.sh) but `gcloud run deploy` + `firebase deploy` haven't been run yet against the live `killcont-demo` project. Once deployed, back-fill `PUBLIC_WEB_ORIGIN` + `ALLOWED_ORIGINS` on Cloud Run with the hosted FE URL and add the hosting domain to Firebase Auth → authorized domains.
 2. `tsc -b` trips on a pre-existing `TS5103` toolchain warning during `npm run build`. `npx vite build` produces a fully working bundle (514 modules) and is what `deploy-web.sh` falls back to. Worth fixing the tsconfig flag separately.
 
-## Recently closed gaps (Bundles B/A/C/D/E, DP1–DP15, S2–S11)
+## Recently closed gaps (Bundles B/A/C/D/E/F, DP1–DP15, S2–S11)
+
+### Bundle F — Real Google sign-in (2026-04-27)
+
+- **Code-side wiring complete.** `repos.upsert_user` accepts optional `role` kwarg (sqlite + firestore); `/session/login` passes `role="operator"` for firebase-mode Google sign-ins (demo mode keeps implicit `"admin"`). `main.py` startup banner via `print()` reports `AUTH_BACKEND` + credentials path so misconfigs are obvious in stdout instead of silently failing on first sign-in. `SignInPage.tsx` catches popup-cancel / popup-blocked / unauthorized-domain Firebase error codes and renders friendly copy.
+- **`AUTH_BACKEND=demo` remains the default.** The local-profile MVP is unchanged. Operators flip `AUTH_BACKEND=firebase` + `VITE_AUTH_MODE=firebase` to opt into real Google sign-in.
+- **Operator walkthrough lives at `infra/google-cloud/SETUP.md`.** Two parts: (1) Real Google sign-in locally (Firebase project create → Authentication enable → Web App register → service account download → 6 web config values pasted into `apps/web/.env` → 1 backend env var pointing at `service-account.json`); (2) Public deployment (billing → CLI install → API enables → Firestore + Cloud Storage create → Cloud Run deploy → Firebase Hosting deploy → CORS back-fill → Authorized Domains add).
+- **Open-access policy.** Any verified Google account is accepted; first sign-in auto-provisions into `org-demo-1` as role `operator`. No allowlist, no email-domain filter — judges can sign in with any Google account during the demo.
 
 ### Bundle E — Live cascade + duplicate detection (2026-04-27)
 
