@@ -45,6 +45,7 @@ count_incidents_by_status = _impl.count_incidents_by_status
 count_assets_by_type = _impl.count_assets_by_type
 insert_action = _impl.insert_action
 update_incident_status = _impl.update_incident_status
+update_incident_severity = _impl.update_incident_severity
 upsert_user = _impl.upsert_user
 get_user = _impl.get_user
 get_all_assets_with_phash = _impl.get_all_assets_with_phash
@@ -71,6 +72,7 @@ __all__ = [
     "count_assets_by_type",
     "insert_action",
     "update_incident_status",
+    "update_incident_severity",
     "upsert_user",
     "get_user",
     "get_all_assets_with_phash",

@@ -73,6 +73,20 @@ async def match_asset_against_feeds(asset_id: str) -> list[dict[str, Any]]:
     summaries: list[dict[str, Any]] = []
     promoted = 0
 
+    # Pass 1 (Bundle E): asset-vs-asset duplicate detection. Runs first so
+    # the duplicate is the first row in the upload toast and the operator
+    # sees "you already protect this" immediately.
+    try:
+        duplicate = await _check_duplicate_asset(asset, org_id, settings)
+    except Exception:
+        log.exception("matcher: duplicate-asset pass failed for %s", asset_id)
+        duplicate = None
+    if duplicate:
+        summaries.append(duplicate)
+        if duplicate.get("incident_id"):
+            promoted += 1
+
+    # Pass 2 (existing): asset x feed_item match for repost detection.
     feed_items = repos.list_feed_items(org_id, limit=500)
     for feed in feed_items:
         feed_phash = feed.get("phash")
@@ -94,6 +108,7 @@ async def match_asset_against_feeds(asset_id: str) -> list[dict[str, Any]]:
         except Exception:
             log.exception("matcher: failed to score pair asset=%s feed=%s", asset_id, feed.get("id"))
             continue
+        summary["kind"] = "feed"
         summaries.append(summary)
         if summary.get("incident_id"):
             promoted += 1
@@ -262,10 +277,98 @@ async def _synthesize_one_match(asset: dict[str, Any]) -> dict[str, Any] | None:
 
     feed_full = repos.get_feed_item(feed_id) or {}
     score = similarity_score(asset["phash"], feed_phash)
-    return await _score_pair(
+    summary = await _score_pair(
         asset=asset,
         feed=feed_full,
         score=max(score, settings.phash_match_threshold + 0.05),
         promoted_so_far=0,
         synthetic=True,
     )
+    summary["kind"] = "feed"
+    return summary
+
+
+async def _check_duplicate_asset(
+    new_asset: dict[str, Any],
+    org_id: str,
+    settings: Any,
+) -> dict[str, Any] | None:
+    """Pass 1: detect re-registration of the same image (Bundle E).
+
+    Compares ``new_asset.phash`` against every other asset in the same org.
+    On a hit at ``settings.phash_duplicate_threshold`` or above, synthesizes
+    a feed_item from the new asset's pixels (so the cascade reaches Monitor
+    visually), then routes through ``_score_pair`` so an incident is
+    persisted with full Gemini triage.
+
+    Returns the FE-facing summary or None if no duplicate was found.
+    """
+
+    threshold = settings.phash_duplicate_threshold
+    new_phash = new_asset.get("phash")
+    if not new_phash:
+        return None
+
+    best_match: dict[str, Any] | None = None
+    best_score = -1.0
+    for candidate in repos.get_all_assets_with_phash(org_id):
+        if candidate["id"] == new_asset["id"]:
+            continue
+        cand_phash = candidate.get("phash")
+        if not cand_phash:
+            continue
+        try:
+            score = similarity_score(new_phash, cand_phash)
+        except Exception:
+            continue
+        if score >= threshold and score > best_score:
+            best_match = candidate
+            best_score = score
+
+    if not best_match:
+        return None
+
+    # Synthesize a feed_item that represents the duplicate registration.
+    # Reuse the new asset's pixels so the Monitor row + Evidence comparison
+    # render the actual re-uploaded image.
+    feed_id = repos.new_feed_id()
+    repos.insert_feed_item(
+        {
+            "id": feed_id,
+            "org_id": org_id,
+            "source_type": "self_duplicate",
+            "source_platform": "killcont:duplicate-registration",
+            "source_url": None,
+            "source_author": None,
+            "source_region": "Internal",
+            "caption": (
+                f"Duplicate registration of '{best_match['title']}' as {new_asset['id']}"
+            ),
+            "content_type": "image",
+            "media_path": new_asset.get("primary_path"),
+            "preview_path": new_asset.get("preview_path"),
+            "phash": new_phash,
+        }
+    )
+    await publish("feed.ingested", {"feed_item_id": feed_id})
+
+    feed_full = repos.get_feed_item(feed_id) or {}
+    summary = await _score_pair(
+        # The "official" side of the case is the older (already-protected)
+        # asset; the new asset's pixels live in the synthetic feed.
+        asset=best_match,
+        feed=feed_full,
+        score=best_score,
+        promoted_so_far=0,
+        synthetic=True,
+    )
+    summary["kind"] = "duplicate"
+
+    # Bundle E: a duplicate-registration is a workflow event, not piracy.
+    # Force severity to 'monitor' regardless of the score-derived value so
+    # the operator queue treats this differently from a real repost.
+    if summary.get("incident_id"):
+        repos.update_incident_severity(summary["incident_id"], "monitor")
+        summary["severity"] = "monitor"
+
+    return summary

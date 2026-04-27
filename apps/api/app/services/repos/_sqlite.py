@@ -229,6 +229,23 @@ def update_incident_status(incident_id: str, status: str) -> Optional[dict]:
     return row
 
 
+def update_incident_severity(incident_id: str, severity: str) -> Optional[dict]:
+    """Override an incident's severity + triage_label after it was inserted.
+
+    Bundle E: used by the duplicate-asset pass so duplicate registrations
+    always carry severity='monitor' regardless of pHash score, since they
+    are workflow events (re-uploads), not piracy.
+    """
+    with get_conn() as conn:
+        conn.execute(
+            "UPDATE incidents SET severity = ?, triage_label = ?, "
+            "       updated_at = datetime('now') WHERE id = ?",
+            (severity, severity, incident_id),
+        )
+        row = conn.execute("SELECT * FROM incidents WHERE id = ?", (incident_id,)).fetchone()
+    return row
+
+
 def upsert_user(user_id: str, email: str, display_name: str, org_id: str) -> dict:
     with get_conn() as conn:
         existing = conn.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()

@@ -347,6 +347,23 @@ def update_incident_status(incident_id: str, status: str) -> Optional[dict]:
     return _doc_to_dict(ref.get())
 
 
+def update_incident_severity(incident_id: str, severity: str) -> Optional[dict]:
+    """Bundle E: override severity + triage_label post-insert."""
+    db = _client()
+    ref = db.collection("incidents").document(incident_id)
+    snap = ref.get()
+    if not snap.exists:
+        return None
+    ref.update(
+        {
+            "severity": severity,
+            "triage_label": severity,
+            "updated_at": _now_iso(),
+        }
+    )
+    return _doc_to_dict(ref.get())
+
+
 def upsert_user(user_id: str, email: str, display_name: str, org_id: str) -> dict:
     db = _client()
     ref = db.collection("users").document(user_id)
