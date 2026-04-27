@@ -56,7 +56,7 @@ function Thumb({ src, label }: { src: string | undefined; label: string }) {
 
 export function MonitorPage() {
   const navigate = useNavigate();
-  const feedsQuery = useFeeds();
+  const { freshIds, ...feedsQuery } = useFeeds();
   const incidentsQuery = useIncidents();
   const feedRows = feedsQuery.data?.items ?? [];
 
@@ -114,9 +114,10 @@ export function MonitorPage() {
               const thumb = mediaUrl(row.preview_path ?? row.media_path);
               const linked = feedToIncident.get(row.id);
               const isSelected = (selected?.id ?? feedRows[0]?.id) === row.id;
+              const isFresh = freshIds.has(row.id);
               return (
                 <article
-                  className="stack-list__item"
+                  className={`stack-list__item${isFresh ? " stack-list__item--flash" : ""}`}
                   key={row.id}
                   onClick={() => setSelectedId(row.id)}
                   role="button"
@@ -135,13 +136,21 @@ export function MonitorPage() {
                   <div>
                     <div
                       className="stack-list__meta"
-                      style={{ display: "flex", gap: 8, fontSize: 11 }}
+                      style={{ display: "flex", gap: 8, fontSize: 11, alignItems: "center" }}
                     >
                       <span>{row.source_platform ?? "unknown"}</span>
                       <span>·</span>
                       <span>{row.source_region ?? "—"}</span>
                       <span>·</span>
                       <span>{formatTime(row.ingest_time)}</span>
+                      {isFresh && (
+                        <span
+                          className="status-pill status-pill--monitor"
+                          style={{ marginLeft: 4, fontSize: 10, padding: "1px 6px" }}
+                        >
+                          NEW
+                        </span>
+                      )}
                     </div>
                     <strong style={{ display: "block", marginTop: 4 }}>
                       {row.caption ?? row.source_author ?? "No caption"}
