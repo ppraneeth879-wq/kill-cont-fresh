@@ -113,7 +113,15 @@ No test framework is configured — verification is `compileall` + `npm run buil
 1. **S12 — first manual deploy.** All deploy artifacts are landed (Dockerfile, deploy-api.sh, firebase.json, deploy-web.sh) but `gcloud run deploy` + `firebase deploy` haven't been run yet against the live `killcont-demo` project. Once deployed, back-fill `PUBLIC_WEB_ORIGIN` + `ALLOWED_ORIGINS` on Cloud Run with the hosted FE URL and add the hosting domain to Firebase Auth → authorized domains.
 2. `tsc -b` trips on a pre-existing `TS5103` toolchain warning during `npm run build`. `npx vite build` produces a fully working bundle (514 modules) and is what `deploy-web.sh` falls back to. Worth fixing the tsconfig flag separately.
 
-## Recently closed gaps (Bundles B/A/C/D, DP1–DP15, S2–S11)
+## Recently closed gaps (Bundles B/A/C/D/E, DP1–DP15, S2–S11)
+
+### Bundle E — Live cascade + duplicate detection (2026-04-27)
+
+- **Asset×asset duplicate detection.** `app/services/matcher.py::_check_duplicate_asset` runs as Pass 1 of `match_asset_against_feeds`. Compares the new asset's pHash against every other asset in the same org via `repos.get_all_assets_with_phash`. On a hit ≥ `Settings.phash_duplicate_threshold` (default 0.92), synthesizes a feed_item with `source_type="self_duplicate"`, `source_platform="killcont:duplicate-registration"`, pixels copied from the new asset, then routes through `_score_pair` and forces severity to `"monitor"` post-insert via the new `repos.update_incident_severity` helper. Pass 2 (existing asset×feed_item loop at threshold 0.80) still runs after — both can produce incidents on the same upload. Each summary is tagged `kind="feed"` or `kind="duplicate"`.
+- **Two-tier threshold knob.** `Settings.phash_duplicate_threshold` (`PHASH_DUPLICATE_THRESHOLD` env var, default 0.92) added alongside the existing `phash_match_threshold` (0.80).
+- **Monitor live refresh.** `simulate_incident` now publishes `feed.ingested` after `repos.insert_feed_item`, fixing the stale-during-live-run bug. `useFeeds` returns `{...query, freshIds: Set<string>}` (4.5 s window, same shape as `useIncidents`). `MonitorPage` flashes the row and shows a "NEW" pill while it's fresh.
+- **Evidence "N new cases" jump banner.** `EvidencePage` listens to SSE `incident.created`, ignores events where `incident_id === selectedId`. Banner appears in `ContextHeader` actions slot when `incomingCount > 0`, counts up across multiple events, auto-clears 30 s after the last one or immediately on click.
+- **Sidebar cross-tab badges.** New `apps/web/src/features/shell/useSidebarBadges.ts` hook. Counters increment on `incident.created` / `feed.ingested`, reset after 5 s of no events. Suppressed on the currently-active route. Sidebar renders `.sidebar-nav__badge` pills next to Incidents and Monitor nav items.
 
 ### Bundle B — On-upload matcher (2026-04-26)
 

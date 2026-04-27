@@ -1,6 +1,6 @@
 # KillCont Status
 
-Last updated: 2026-04-26
+Last updated: 2026-04-27
 
 ## Overall State
 
@@ -52,6 +52,7 @@ Last updated: 2026-04-26
 | Asset upload UX (Bundle A) | Completed | Autofocus + inline validation + 25 MB cap on the modal; post-upload toast with match summary, scroll-into-view + flash on the new asset row. |
 | Live watch refresh (Bundle C) | Completed | Multi-incident emitter (Restream-suspected + Signal-match both promote, platform rotates per fire). Honest "demo stream" copy. Fresh-from-matcher rail shows NEW pulse + reason snippet, rows clickable. |
 | Gemini visibility (Bundle D) | Completed | Shared `TriageSourceChip` (Gemini · model · latency or Canned reason) on Incidents/Detail/Evidence. `/health/profile.gemini` exposes lifetime ok_count/fallback_count/total_count, surfaced in Settings → System Status. |
+| Live cascade + duplicate detection (Bundle E) | Completed | Asset×asset duplicate detection at `PHASH_DUPLICATE_THRESHOLD=0.92` produces a monitor-severity incident with a synthetic feed_item (`source_type="self_duplicate"`). `simulate_incident` publishes `feed.ingested`, fixing Monitor's stale-during-live-run bug. Monitor `freshIds` + flash, Evidence "N new cases" jump banner, sidebar incident/monitor badges all wired. |
 | Documentation operating model | Active | Status and logbook updated alongside implementation |
 
 ## Current Runtime Stack
@@ -71,6 +72,29 @@ Last updated: 2026-04-26
 - Metadata on Firestore.
 - Media on Cloud Storage.
 - Keep local SQLite/filesystem profile for offline demo fallback and rapid local testing.
+
+## Closed (2026-04-27) — Bundle E (Plan: live-cascade-and-duplicates)
+
+User-reported gaps from playthrough on 2026-04-27 closed:
+- "If I register the same asset twice, will it produce a real match incident?" — yes, deliberately, via Pass 1 of the matcher.
+- "Live runs should change everything — map, fresh-from-matcher rail, evidence, incidents, monitor." — Monitor was the only broken cascade; now fixed.
+
+Spec: `docs/superpowers/specs/2026-04-27-live-cascade-and-duplicates-design.md`. Plan: `docs/superpowers/plans/2026-04-27-live-cascade-and-duplicates.md`.
+
+- **T1 — Two-tier pHash threshold.** `PHASH_DUPLICATE_THRESHOLD=0.92` env var added to `Settings` and `.env.example`. Asset×feed matching keeps `PHASH_MATCH_THRESHOLD=0.80`.
+- **T2 — `simulate_incident` publishes `feed.ingested`.** Single-line addition right after `repos.insert_feed_item`. Unblocks Monitor's `useFeeds` SSE listener that was already wired but never received events from the live emitter.
+- **T3 — `AssetMatchSummary.kind` field.** New optional `"feed"` | `"duplicate"` discriminator on the upload-toast row schema (Pydantic + TypeScript mirrored).
+- **T4 — `_check_duplicate_asset` Pass 1.** New helper in `app/services/matcher.py`. Compares the new asset's pHash against every other asset in the same org via `repos.get_all_assets_with_phash`. On a hit ≥ 0.92, synthesizes a feed_item with `source_type="self_duplicate"`, `source_platform="killcont:duplicate-registration"`, pixels copied from the new asset, then routes through `_score_pair` and overrides severity to `"monitor"` post-insert via the new `repos.update_incident_severity` helper (sqlite + firestore stub). `match_asset_against_feeds` runs Pass 1 first, Pass 2 (existing feed loop) second; both can produce incidents on the same upload.
+- **T6 — Monitor live refresh.** `useFeeds` adopts the same `freshIds` shape as `useIncidents` (4.5 s window). `MonitorPage` applies `.stack-list__item--flash` and a "NEW" pill on each fresh row. The flash class was already defined in Bundle A2 — no new CSS needed.
+- **T7 — Evidence "N new cases" jump banner.** New component-local state in `EvidencePage` driven by SSE `incident.created`. Banner appears in `ContextHeader` actions slot when `incomingCount > 0`, counts up if multiple cases arrive while the operator is mid-view, auto-clears 30 s after the last event or immediately on click. New `.evidence-jump-banner` CSS rule (yellow accent + 0.35 s slide-in).
+- **T8 — Sidebar cross-tab badges.** New `apps/web/src/features/shell/useSidebarBadges.ts` hook subscribes to SSE at the Sidebar level, maintains `{incidents, monitor}` counters that increment on `incident.created` / `feed.ingested` and reset to zero after 5 s of no events. Suppressed on the currently-active route. New `.sidebar-nav__badge` CSS rule.
+
+Verification (2026-04-27):
+- `python -m compileall app` clean.
+- `npx vite build` clean (515 modules, 22.50 kB CSS, 585 kB JS).
+- `python scripts/smoke.py` 10/10 green in 7.32 s.
+- End-to-end duplicate probe: same JPG registered twice → A2 returns 3 matches `[kind=duplicate severity=monitor score=1.000, kind=feed severity=strike score=1.000, kind=feed severity=monitor score=0.828]`.
+- End-to-end live cascade: 8-segment / 1 s live run → +3 incidents AND +3 feed_items (both events propagate to consumer hooks).
 
 ## Closed (2026-04-26) — Bundle B / A / C / D (Plan: fix-incompleteness)
 

@@ -4,6 +4,29 @@ This file is the running execution journal for the team.
 
 Use it after every meaningful change so the project stays in sync.
 
+## 2026-04-27 — Bundle E (live-cascade-and-duplicates plan)
+
+Closed two demo gaps surfaced during playthrough:
+1. Same-asset re-registration now produces a deliberate duplicate-detection incident (was working accidentally via the synthetic-fallback path).
+2. Live runs now refresh Monitor (was broken — `simulate_incident` only published `incident.created`, Monitor's `useFeeds` listens for `feed.ingested`).
+
+Plus three polish items: Evidence "N new cases" jump banner, sidebar incident/monitor badges with auto-fade, two-tier pHash threshold knob.
+
+Spec + plan: `docs/superpowers/specs/2026-04-27-live-cascade-and-duplicates-design.md`, `docs/superpowers/plans/2026-04-27-live-cascade-and-duplicates.md`.
+
+Commits (in order, on `second_branch`):
+- `1a18461` feat(t1): add PHASH_DUPLICATE_THRESHOLD config knob (0.92)
+- `f72aa13` feat(t2): publish feed.ingested after simulate_incident insert_feed_item
+- `4c0a183` feat(t3): AssetMatchSummary.kind field for duplicate vs feed matches
+- `8ecbf6c` feat(t4+t5): asset-vs-asset duplicate detection (Pass 1) in matcher
+- `309059b` feat(t6): Monitor live refresh with freshIds + NEW pulse
+- `ee8781a` feat(t7): Evidence 'N new cases' jump banner on incident.created
+- `3e20b7e` feat(t8): sidebar badges for cross-tab incident + feed_item awareness
+
+Verification: compileall clean, `npx vite build` clean (515 modules, 22.5 kB CSS), `python scripts/smoke.py` 10/10 green in 7.32 s, end-to-end duplicate probe (same JPG twice → 3 matches with kind=duplicate first), end-to-end live cascade (8-segment run → +3 incidents AND +3 feed_items).
+
+Next phase per user: real Google sign-in via Firebase popup, then S12 (Cloud Run + Firebase Hosting deploy).
+
 ## 2026-04-26 — Bundle B / A / C / D (fix-incompleteness plan)
 
 Closed the six demo-blocking gaps the user reported during playthrough (upload→matcher→incidents→evidence chain, live-watch refresh per click, Gemini visibility everywhere). Plan and spec live at `docs/superpowers/plans/2026-04-26-fix-incompleteness.md` + `docs/superpowers/specs/2026-04-26-fix-incompleteness-design.md`.
