@@ -1,7 +1,7 @@
 # Graph Report - D:\kill-cont-fresh  (2026-04-27)
 
 ## Corpus Check
-- 88 files · ~299,291 words
+- 88 files · ~303,182 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
