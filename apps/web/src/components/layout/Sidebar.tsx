@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { USER_KEY, TOKEN_KEY } from "../../lib/api";
+import { useSidebarBadges } from "../../features/shell/useSidebarBadges";
 
 const NAV = [
   {
@@ -82,6 +83,13 @@ const NAV = [
 
 export function Sidebar() {
   const navigate = useNavigate();
+  const badges = useSidebarBadges();
+
+  function badgeFor(path: string): number {
+    if (path === "/app/incidents") return badges.incidents;
+    if (path === "/app/monitor") return badges.monitor;
+    return 0;
+  }
 
   function handleSignOut() {
     localStorage.removeItem(TOKEN_KEY);
@@ -99,18 +107,26 @@ export function Sidebar() {
 
       {/* Primary nav */}
       <nav className="sidebar__nav">
-        {NAV.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) =>
-              `sidebar__item${isActive ? " sidebar__item--active" : ""}`
-            }
-          >
-            <span className="sidebar__icon">{item.icon}</span>
-            <span className="sidebar__label">{item.label}</span>
-          </NavLink>
-        ))}
+        {NAV.map((item) => {
+          const count = badgeFor(item.path);
+          return (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) =>
+                `sidebar__item${isActive ? " sidebar__item--active" : ""}`
+              }
+            >
+              <span className="sidebar__icon">{item.icon}</span>
+              <span className="sidebar__label">{item.label}</span>
+              {count > 0 && (
+                <span className="sidebar-nav__badge" aria-label={`${count} new`}>
+                  {count}
+                </span>
+              )}
+            </NavLink>
+          );
+        })}
       </nav>
 
       {/* Footer */}
