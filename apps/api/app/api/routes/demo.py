@@ -147,6 +147,12 @@ async def simulate_incident(body: SimulateRequest):
         }
     )
 
+    # Bundle E (live cascade): tell Monitor's useFeeds hook a new feed_item
+    # exists. Without this, the live run leaves Monitor stale because the
+    # only event published below is `incident.created`, which Monitor
+    # doesn't listen for.
+    await publish("feed.ingested", {"feed_item_id": feed_id})
+
     # Score + candidate row.
     distance = hamming_distance(asset["phash"], feed_phash)
     score = similarity_score(asset["phash"], feed_phash)
