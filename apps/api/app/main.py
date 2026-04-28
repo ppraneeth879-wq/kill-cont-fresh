@@ -48,6 +48,14 @@ PUBLIC_PATHS = (
 async def app_auth(request: Request, call_next):
     path = request.url.path
 
+    # CORS preflight: browsers send OPTIONS without Authorization. CORSMiddleware
+    # (registered above) will short-circuit and answer with the right headers,
+    # but middleware order means our auth check still runs unless we exempt
+    # OPTIONS explicitly. Without this, every cross-origin POST/PATCH/DELETE
+    # fails with "Failed to fetch" because the preflight gets 401.
+    if request.method == "OPTIONS":
+        return await call_next(request)
+
     # Only guard /api/v1 paths that aren't on the explicit public list.
     if path.startswith("/api/v1") and not path.startswith(PUBLIC_PATHS):
         token = request.headers.get("authorization") or ""
