@@ -60,3 +60,8 @@ apps/web/vite.config.js
 apps/web/vite.config.d.ts
 
 CLAUDE.md
+
+# AI Documentation files
+docs/
+CLAUDE.md
+infra/google-cloud/SETUP.md
