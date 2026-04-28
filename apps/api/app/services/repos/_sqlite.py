@@ -229,6 +229,28 @@ def update_incident_status(incident_id: str, status: str) -> Optional[dict]:
     return row
 
 
+def update_asset_media(
+    asset_id: str,
+    primary_path: Optional[str],
+    preview_path: Optional[str],
+    phash: Optional[str],
+) -> Optional[dict]:
+    """Persist the post-upload media paths + computed pHash on an asset.
+
+    Bundle G: routes/assets.py used to do this with raw SQL via get_conn(),
+    which silently bypassed the Firestore adapter in cloud profile and
+    caused upload to 404 because the row never reached Firestore.
+    """
+    with get_conn() as conn:
+        conn.execute(
+            "UPDATE assets SET primary_path = ?, preview_path = ?, phash = ?, "
+            "       status = 'watching' WHERE id = ?",
+            (primary_path, preview_path, phash, asset_id),
+        )
+        row = conn.execute("SELECT * FROM assets WHERE id = ?", (asset_id,)).fetchone()
+    return row
+
+
 def update_incident_severity(incident_id: str, severity: str) -> Optional[dict]:
     """Override an incident's severity + triage_label after it was inserted.
 

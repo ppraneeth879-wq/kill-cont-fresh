@@ -347,6 +347,33 @@ def update_incident_status(incident_id: str, status: str) -> Optional[dict]:
     return _doc_to_dict(ref.get())
 
 
+def update_asset_media(
+    asset_id: str,
+    primary_path: Optional[str],
+    preview_path: Optional[str],
+    phash: Optional[str],
+) -> Optional[dict]:
+    """Bundle G: persist post-upload media paths + pHash on an asset.
+
+    Was raw SQL in routes/assets.py — caused upload to 404 in cloud
+    profile because the row never reached Firestore.
+    """
+    db = _client()
+    ref = db.collection("assets").document(asset_id)
+    snap = ref.get()
+    if not snap.exists:
+        return None
+    ref.update(
+        {
+            "primary_path": primary_path,
+            "preview_path": preview_path,
+            "phash": phash,
+            "status": "watching",
+        }
+    )
+    return _doc_to_dict(ref.get())
+
+
 def update_incident_severity(incident_id: str, severity: str) -> Optional[dict]:
     """Bundle E: override severity + triage_label post-insert."""
     db = _client()

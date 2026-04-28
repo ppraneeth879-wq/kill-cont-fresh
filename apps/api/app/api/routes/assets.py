@@ -12,7 +12,6 @@ from app.schemas.asset import (
     AssetSummary,
 )
 from app.services import repos, storage
-from app.services.db import get_conn
 from app.services.events_bus import publish
 from app.services.similarity import compute_phash
 
@@ -33,23 +32,27 @@ def list_assets(request: Request) -> AssetListResponse:
 @router.post("", response_model=AssetCreateResponse)
 def create_asset(body: AssetCreateRequest) -> AssetCreateResponse:
     asset_id = repos.new_asset_id()
-    with get_conn() as conn:
-        conn.execute(
-            "INSERT INTO assets (id, org_id, title, asset_type, event_name, sport, "
-            "   rights_owner, description, status, provenance_status) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'processing', ?)",
-            (
-                asset_id,
-                _org_id(),
-                body.title,
-                body.asset_type,
-                body.event_name,
-                body.sport,
-                body.rights_owner,
-                body.description,
-                body.provenance_status,
-            ),
-        )
+    # Bundle G: route through the adapter so this works in both sqlite
+    # (local) and firestore (cloud) profiles. Was raw SQL via get_conn()
+    # which silently bypassed Firestore on Cloud Run -> upload step
+    # subsequently 404'd because the row was nowhere to be found.
+    repos.insert_asset(
+        {
+            "id": asset_id,
+            "org_id": _org_id(),
+            "title": body.title,
+            "asset_type": body.asset_type,
+            "event_name": body.event_name,
+            "sport": body.sport,
+            "rights_owner": body.rights_owner,
+            "description": body.description,
+            "status": "processing",
+            "provenance_status": body.provenance_status,
+            "primary_path": None,
+            "preview_path": None,
+            "phash": None,
+        }
+    )
     return AssetCreateResponse(
         id=asset_id,
         upload_url=f"/api/v1/assets/{asset_id}/upload",
@@ -79,17 +82,13 @@ async def upload_asset_media(
     except Exception:
         phash = None
 
-    with get_conn() as conn:
-        conn.execute(
-            "UPDATE assets SET primary_path = ?, preview_path = ?, phash = ?, "
-            "       status = 'watching' WHERE id = ?",
-            (
-                storage.relpath(primary),
-                storage.relpath(preview),
-                phash,
-                asset_id,
-            ),
-        )
+    # Bundle G: adapter-clean (was raw SQL via get_conn()).
+    repos.update_asset_media(
+        asset_id=asset_id,
+        primary_path=storage.relpath(primary),
+        preview_path=storage.relpath(preview),
+        phash=phash,
+    )
 
     # Bundle B: run the on-upload matcher against existing feed items.
     # Never let a matcher bug block the asset registration itself.

@@ -4,48 +4,47 @@ from app.core.config import get_settings
 from app.schemas.dashboard import DashboardMetric, DashboardOverviewResponse
 from app.schemas.incident import IncidentSummary
 from app.services import repos
-from app.services.db import get_conn
 from app.services.events_bus import subscriber_count
 
 
 router = APIRouter()
 
 
+# Bundle G: dashboard counts now go through the adapter (was raw SQL via
+# get_conn() which only worked in sqlite-local — would have shown all-zero
+# KPIs in cloud profile).
+
+
 def _org_id(request: Request) -> str:
     return get_settings().demo_org_id
+
+
+_RESOLVED_STATUSES = ("resolved", "ignored")
 
 
 @router.get("/overview", response_model=DashboardOverviewResponse)
 def get_dashboard_overview(request: Request) -> DashboardOverviewResponse:
     org_id = _org_id(request)
 
-    with get_conn() as conn:
-        total_assets = conn.execute(
-            "SELECT COUNT(*) AS n FROM assets WHERE org_id = ?", (org_id,)
-        ).fetchone()["n"]
-        asset_type_counts = conn.execute(
-            "SELECT asset_type, COUNT(*) AS n FROM assets WHERE org_id = ? GROUP BY asset_type",
-            (org_id,),
-        ).fetchall()
-        total_incidents_open = conn.execute(
-            "SELECT COUNT(*) AS n FROM incidents "
-            "  WHERE org_id = ? AND operator_status NOT IN ('resolved','ignored')",
-            (org_id,),
-        ).fetchone()["n"]
-        strike_incidents = conn.execute(
-            "SELECT COUNT(*) AS n FROM incidents "
-            "  WHERE org_id = ? AND severity = 'strike' "
-            "    AND operator_status NOT IN ('resolved','ignored')",
-            (org_id,),
-        ).fetchone()["n"]
-        live_assets = conn.execute(
-            "SELECT COUNT(*) AS n FROM assets WHERE org_id = ? AND asset_type = 'live_watch'",
-            (org_id,),
-        ).fetchone()["n"]
+    asset_type_counts = repos.count_assets_by_type(org_id)
+    total_assets = sum(asset_type_counts.values())
 
-    type_breakdown = {r["asset_type"]: r["n"] for r in asset_type_counts}
-    video_count = type_breakdown.get("video", 0) + type_breakdown.get("live_watch", 0)
-    image_count = type_breakdown.get("image", 0)
+    # Pull a window of incidents and bucket in Python — keeps the adapter
+    # surface narrow (no need for severity-aware count helpers).
+    all_incidents = repos.list_incidents(org_id=org_id, limit=500)
+
+    def _is_open(row: dict) -> bool:
+        return (row.get("operator_status") or "new") not in _RESOLVED_STATUSES
+
+    open_incidents = [row for row in all_incidents if _is_open(row)]
+    total_incidents_open = len(open_incidents)
+    strike_incidents = sum(1 for row in open_incidents if row.get("severity") == "strike")
+
+    video_count = (
+        asset_type_counts.get("video", 0) + asset_type_counts.get("live_watch", 0)
+    )
+    image_count = asset_type_counts.get("image", 0)
+    live_assets = asset_type_counts.get("live_watch", 0)
 
     metrics = [
         DashboardMetric(
@@ -70,7 +69,7 @@ def get_dashboard_overview(request: Request) -> DashboardOverviewResponse:
         ),
     ]
 
-    recent = [IncidentSummary(**row) for row in repos.list_incidents(org_id=org_id, limit=6)]
+    recent = [IncidentSummary(**row) for row in all_incidents[:6]]
 
     return DashboardOverviewResponse(
         metrics=metrics,
